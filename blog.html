@@ -26,7 +26,9 @@
         .hamburger.open span:nth-child(2) { opacity: 0; }
         .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
         .nav-logo { font-family: 'Cormorant SC', serif; font-size: 15px; font-weight: 400; letter-spacing: 0.28em; color: var(--cream); text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
-        .nav-right { min-width: 80px; }
+        .nav-right { min-width: 80px; display: flex; justify-content: flex-end; }
+        .nav-admin { font-size: 8px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(245,234,208,0.35); text-decoration: none; transition: color 0.2s; }
+        .nav-admin:hover { color: var(--crimson); }
         .menu-overlay { display: none; position: fixed; inset: 0; background: rgba(13,13,13,0.98); z-index: 190; flex-direction: column; align-items: center; justify-content: center; gap: 36px; }
         .menu-overlay.open { display: flex; }
         .menu-overlay a { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 5vw, 50px); font-weight: 300; color: var(--cream); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
@@ -45,7 +47,7 @@
         .sec-btn.active { color: var(--cream); border-bottom-color: var(--crimson); }
         #sectionBlog { padding: 80px 64px 120px; }
         .featured-post { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 80px; border: 1px solid rgba(245,234,208,0.08); }
-        .featured-img { background: var(--charcoal); aspect-ratio: 4/3; position: relative; overflow: hidden; }
+        .featured-img { background: var(--charcoal); aspect-ratio: 4/3; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .featured-img svg { width: 100%; height: 100%; }
         .featured-meta { padding: 56px 52px; display: flex; flex-direction: column; justify-content: center; }
         .post-tag { font-size: 8px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: var(--crimson); margin-bottom: 16px; }
@@ -54,17 +56,32 @@
         .post-byline { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; }
         .byline-text { font-size: 9px; letter-spacing: 0.1em; color: rgba(245,234,208,0.3); }
         .byline-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(245,234,208,0.2); }
-        .btn-read { display: inline-flex; align-items: center; gap: 10px; font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cream); text-decoration: none; padding-bottom: 6px; border-bottom: 1px solid rgba(245,234,208,0.3); transition: border-color 0.2s; }
+        .btn-read { display: inline-flex; align-items: center; gap: 10px; font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cream); text-decoration: none; padding-bottom: 6px; border-bottom: 1px solid rgba(245,234,208,0.3); border-top: none; border-left: none; border-right: none; transition: border-bottom-color 0.2s; cursor: pointer; background: none; font-family: 'Montserrat', sans-serif; }
         .btn-read:hover { border-bottom-color: var(--crimson); }
         .btn-read::after { content: '→'; font-size: 12px; }
         .posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
         .post-card { cursor: pointer; }
-        .card-img { background: var(--charcoal); aspect-ratio: 3/2; margin-bottom: 24px; }
+        .card-img { background: var(--charcoal); aspect-ratio: 3/2; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .card-img svg { width: 100%; height: 100%; }
         .card-tag { font-size: 8px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--crimson); margin-bottom: 10px; }
         .card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--cream); line-height: 1.25; margin-bottom: 12px; }
         .card-excerpt { font-size: 10px; color: rgba(245,234,208,0.4); line-height: 1.8; margin-bottom: 16px; }
         .card-date { font-size: 8px; letter-spacing: 0.12em; color: rgba(245,234,208,0.25); }
+        .posts-loading { text-align: center; padding: 80px; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,234,208,0.2); }
+        /* Post overlay */
+        .post-overlay { display: none; position: fixed; inset: 0; z-index: 300; background: var(--black); overflow-y: auto; }
+        .post-overlay.open { display: block; }
+        .overlay-inner { max-width: 720px; margin: 0 auto; padding: 120px 40px 100px; }
+        .overlay-back { display: inline-flex; align-items: center; gap: 8px; font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(245,234,208,0.35); background: none; border: none; cursor: pointer; transition: color 0.2s; margin-bottom: 48px; font-family: 'Montserrat', sans-serif; }
+        .overlay-back::before { content: '←'; font-size: 12px; }
+        .overlay-back:hover { color: var(--cream); }
+        .overlay-tag { font-size: 8px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: var(--crimson); margin-bottom: 20px; }
+        .overlay-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 5vw, 64px); font-weight: 300; color: var(--cream); line-height: 1.1; margin-bottom: 28px; }
+        .overlay-byline { display: flex; align-items: center; gap: 14px; margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid rgba(245,234,208,0.08); }
+        .overlay-body { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 300; color: rgba(245,234,208,0.8); line-height: 1.85; }
+        .overlay-body p { margin-bottom: 24px; }
+        .overlay-placeholder { font-size: 12px; color: rgba(245,234,208,0.2); letter-spacing: 0.08em; font-family: 'Montserrat', sans-serif; text-align: center; padding: 60px 0; border-top: 1px solid rgba(245,234,208,0.05); margin-top: 48px; }
+        /* Newsletter */
         #sectionNewsletter { display: none; }
         .newsletter-hero { padding: 80px 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
         .nl-kicker { font-size: 9px; font-weight: 600; letter-spacing: 0.32em; text-transform: uppercase; color: var(--crimson); margin-bottom: 18px; }
@@ -102,6 +119,7 @@
             .issues-list { grid-template-columns: 1fr; }
             #sectionBlog, .newsletter-hero, .past-issues { padding-left: 28px; padding-right: 28px; }
             .blog-hero { padding: 120px 28px 60px; }
+            .overlay-inner { padding: 100px 24px 80px; }
         }
         @media (max-width: 600px) { .posts-grid { grid-template-columns: 1fr; } .sec-btn { padding: 20px 24px; } }
     </style>
@@ -110,7 +128,7 @@
 <nav id="main-nav">
     <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
     <a href="index.html" class="nav-logo">Ficti Garments</a>
-    <div class="nav-right"></div>
+    <div class="nav-right"><a href="admin.html" class="nav-admin" id="adminLink" style="display:none">Admin</a></div>
 </nav>
 <div class="menu-overlay" id="menuOverlay">
     <button class="menu-close" onclick="toggleMenu()">×</button>
@@ -136,75 +154,7 @@
 </div>
 
 <div id="sectionBlog">
-    <div class="featured-post">
-        <div class="featured-img">
-            <svg viewBox="0 0 600 450" xmlns="http://www.w3.org/2000/svg">
-                <rect width="600" height="450" fill="#1A1A1A"/>
-                <circle cx="300" cy="200" r="100" fill="none" stroke="rgba(245,234,208,0.05)" stroke-width="1"/>
-                <circle cx="300" cy="200" r="65" fill="none" stroke="rgba(245,234,208,0.04)" stroke-width="1"/>
-                <text x="300" y="212" text-anchor="middle" font-family="serif" font-size="28" fill="rgba(245,234,208,0.07)" letter-spacing="4">FG</text>
-                <rect x="60" y="370" width="480" height="1" fill="rgba(139,24,24,0.2)"/>
-                <text x="300" y="404" text-anchor="middle" font-family="sans-serif" font-size="9" fill="rgba(245,234,208,0.12)" letter-spacing="3">FICTI GARMENTS</text>
-            </svg>
-        </div>
-        <div class="featured-meta">
-            <p class="post-tag">Featured — Course Culture</p>
-            <h2 class="post-title">Why the Best Rounds Are Played in Silence</h2>
-            <p class="post-excerpt">There's a rhythm to a round played without music, without phones, without the constant pull of notification. We spoke with four scratch golfers about what they've found in the quiet, and what it's changed about how they dress for the game.</p>
-            <div class="post-byline">
-                <span class="byline-text">Marcus Webb</span>
-                <span class="byline-dot"></span>
-                <span class="byline-text">July 14, 2026</span>
-                <span class="byline-dot"></span>
-                <span class="byline-text">8 min read</span>
-            </div>
-            <a href="#" class="btn-read">Read the Story</a>
-        </div>
-    </div>
-    <div class="posts-grid">
-        <div class="post-card">
-            <div class="card-img"><svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg"><rect width="480" height="320" fill="#181818"/><text x="240" y="175" text-anchor="middle" font-family="serif" font-size="20" fill="rgba(245,234,208,0.05)" letter-spacing="3">01</text><circle cx="240" cy="140" r="50" fill="none" stroke="rgba(139,24,24,0.12)" stroke-width="1"/></svg></div>
-            <p class="card-tag">Design &amp; Craft</p>
-            <h3 class="card-title">The Fabric That Started Everything</h3>
-            <p class="card-excerpt">How a chance encounter with a Portuguese mill led to the performance twill at the heart of our Tournament collection.</p>
-            <p class="card-date">June 28, 2026</p>
-        </div>
-        <div class="post-card">
-            <div class="card-img"><svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg"><rect width="480" height="320" fill="#161616"/><text x="240" y="175" text-anchor="middle" font-family="serif" font-size="20" fill="rgba(245,234,208,0.05)" letter-spacing="3">02</text><rect x="180" y="90" width="120" height="100" fill="none" stroke="rgba(245,234,208,0.05)" stroke-width="1"/></svg></div>
-            <p class="card-tag">Players &amp; Perspective</p>
-            <h3 class="card-title">Four Holes, One Bag: A Round with Desmond Cole</h3>
-            <p class="card-excerpt">The architect and amateur champion on course design, movement, and what he reaches for when precision matters.</p>
-            <p class="card-date">June 10, 2026</p>
-        </div>
-        <div class="post-card">
-            <div class="card-img"><svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg"><rect width="480" height="320" fill="#141414"/><text x="240" y="175" text-anchor="middle" font-family="serif" font-size="20" fill="rgba(245,234,208,0.05)" letter-spacing="3">03</text><line x1="140" y1="100" x2="340" y2="180" stroke="rgba(139,24,24,0.1)" stroke-width="1"/><line x1="140" y1="180" x2="340" y2="100" stroke="rgba(139,24,24,0.1)" stroke-width="1"/></svg></div>
-            <p class="card-tag">Season Preview</p>
-            <h3 class="card-title">Fall 2026: What We're Building and Why It Matters</h3>
-            <p class="card-excerpt">A first look at the silhouettes, palette, and intentions behind our most considered collection to date.</p>
-            <p class="card-date">May 22, 2026</p>
-        </div>
-        <div class="post-card">
-            <div class="card-img"><svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg"><rect width="480" height="320" fill="#1C1A18"/><text x="240" y="175" text-anchor="middle" font-family="serif" font-size="20" fill="rgba(245,234,208,0.05)" letter-spacing="3">04</text></svg></div>
-            <p class="card-tag">The Game</p>
-            <h3 class="card-title">On Dress Codes: Golf's Last Frontier of Taste</h3>
-            <p class="card-excerpt">Clubs are relaxing their rules. That doesn't mean standards should follow. A case for intentional dressing.</p>
-            <p class="card-date">May 5, 2026</p>
-        </div>
-        <div class="post-card">
-            <div class="card-img"><svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg"><rect width="480" height="320" fill="#181618"/><text x="240" y="175" text-anchor="middle" font-family="serif" font-size="20" fill="rgba(245,234,208,0.05)" letter-spacing="3">05</text></svg></div>
-            <p class="card-tag">Care &amp; Longevity</p>
-            <h3 class="card-title">How to Keep Your Whites White: A Practical Guide</h3>
-            <p class="card-excerpt">Bone, ivory, and chalk are unforgiving. Here's what our production team actually does to keep light pieces looking right.</p>
-            <p class="card-date">April 18, 2026</p>
-        </div>
-        <div class="post-card">
-            <div class="card-img"><svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg"><rect width="480" height="320" fill="#161818"/><text x="240" y="175" text-anchor="middle" font-family="serif" font-size="20" fill="rgba(245,234,208,0.05)" letter-spacing="3">06</text></svg></div>
-            <p class="card-tag">Founders</p>
-            <h3 class="card-title">Why We Called It Ficti</h3>
-            <p class="card-excerpt">The name raised eyebrows. We knew it would. Here's what we meant — and what we still mean — by clothing crafted for the life you're constructing.</p>
-            <p class="card-date">March 30, 2026</p>
-        </div>
-    </div>
+    <div id="blogContent"><div class="posts-loading">Loading stories…</div></div>
 </div>
 
 <div id="sectionNewsletter">
@@ -250,6 +200,162 @@
     </div>
 </div>
 
+<!-- Post reading overlay -->
+<div class="post-overlay" id="postOverlay">
+    <div class="overlay-inner">
+        <button class="overlay-back" onclick="closePost()">All Stories</button>
+        <p class="overlay-tag" id="overlayTag"></p>
+        <h1 class="overlay-title" id="overlayTitle"></h1>
+        <div class="overlay-byline">
+            <span class="byline-text" id="overlayAuthor"></span>
+            <span class="byline-dot"></span>
+            <span class="byline-text" id="overlayDate"></span>
+        </div>
+        <div class="overlay-body" id="overlayBody"></div>
+        <p class="overlay-placeholder" id="overlayPlaceholder">Full story coming soon — check back or subscribe to The Ficti Letter for first access.</p>
+    </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const supabase = createClient(
+    'https://nusuluxjeckjcdgxzgyf.supabase.co',
+    'sb_publishable_i8jwxXfkwQKCApZOCFu8SA_JrwICvqK'
+);
+
+const ADMIN_EMAIL = 'llc.multum@gmail.com';
+var allPosts = [];
+
+async function checkAdmin() {
+    var { data: { session } } = await supabase.auth.getSession();
+    if (session && session.user.email === ADMIN_EMAIL) {
+        document.getElementById('adminLink').style.display = 'inline';
+    }
+}
+
+function placeholderSVG(n) {
+    var colors = ['#1A1A1A','#181818','#161616','#141414','#1C1A18','#181618','#161818'];
+    return '<svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg">'
+        + '<rect width="480" height="320" fill="' + colors[n % colors.length] + '"/>'
+        + '<text x="240" y="175" text-anchor="middle" font-family="serif" font-size="20" fill="rgba(245,234,208,0.05)" letter-spacing="3">0' + (n+1) + '</text>'
+        + '<circle cx="240" cy="140" r="50" fill="none" stroke="rgba(139,24,24,0.12)" stroke-width="1"/>'
+        + '</svg>';
+}
+
+function featuredSVG() {
+    return '<svg viewBox="0 0 600 450" xmlns="http://www.w3.org/2000/svg">'
+        + '<rect width="600" height="450" fill="#1A1A1A"/>'
+        + '<circle cx="300" cy="200" r="100" fill="none" stroke="rgba(245,234,208,0.05)" stroke-width="1"/>'
+        + '<circle cx="300" cy="200" r="65" fill="none" stroke="rgba(245,234,208,0.04)" stroke-width="1"/>'
+        + '<text x="300" y="212" text-anchor="middle" font-family="serif" font-size="28" fill="rgba(245,234,208,0.07)" letter-spacing="4">FG</text>'
+        + '<rect x="60" y="370" width="480" height="1" fill="rgba(139,24,24,0.2)"/>'
+        + '<text x="300" y="404" text-anchor="middle" font-family="sans-serif" font-size="9" fill="rgba(245,234,208,0.12)" letter-spacing="3">FICTI GARMENTS</text>'
+        + '</svg>';
+}
+
+function escapeHTML(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatDate(iso) {
+    if (!iso) return '';
+    return new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function renderBlog(posts) {
+    if (!posts || posts.length === 0) {
+        document.getElementById('blogContent').innerHTML = '<div class="posts-loading">No stories published yet.</div>';
+        return;
+    }
+    var featured = posts.find(function(p) { return p.featured; }) || posts[0];
+    var rest = posts.filter(function(p) { return p.id !== featured.id; });
+
+    var featuredHTML = '<div class="featured-post">'
+        + '<div class="featured-img">' + featuredSVG() + '</div>'
+        + '<div class="featured-meta">'
+        + '<p class="post-tag">Featured — ' + escapeHTML(featured.category) + '</p>'
+        + '<h2 class="post-title">' + escapeHTML(featured.title) + '</h2>'
+        + '<p class="post-excerpt">' + escapeHTML(featured.excerpt) + '</p>'
+        + '<div class="post-byline">'
+        + '<span class="byline-text">' + escapeHTML(featured.author) + '</span>'
+        + '<span class="byline-dot"></span>'
+        + '<span class="byline-text">' + formatDate(featured.published_at) + '</span>'
+        + '</div>'
+        + '<button class="btn-read" onclick="openPost(\'' + featured.id + '\')">Read the Story</button>'
+        + '</div></div>';
+
+    var gridHTML = rest.map(function(p, i) {
+        return '<div class="post-card" onclick="openPost(\'' + p.id + '\')">'
+            + '<div class="card-img">' + placeholderSVG(i + 1) + '</div>'
+            + '<p class="card-tag">' + escapeHTML(p.category) + '</p>'
+            + '<h3 class="card-title">' + escapeHTML(p.title) + '</h3>'
+            + '<p class="card-excerpt">' + escapeHTML(p.excerpt) + '</p>'
+            + '<p class="card-date">' + formatDate(p.published_at) + '</p>'
+            + '</div>';
+    }).join('');
+
+    document.getElementById('blogContent').innerHTML =
+        '<div style="padding:0 64px;">' + featuredHTML + '</div>'
+        + '<div class="posts-grid" style="padding:0 64px 120px;">' + gridHTML + '</div>';
+}
+
+async function loadPosts() {
+    var res = await supabase.from('posts').select('*').eq('published', true).order('published_at', { ascending: false });
+    if (res.error) {
+        document.getElementById('blogContent').innerHTML = '<div class="posts-loading">Could not load stories.</div>';
+        return;
+    }
+    allPosts = res.data || [];
+    renderBlog(allPosts);
+}
+
+window.openPost = function(id) {
+    var post = allPosts.find(function(p) { return p.id === id; });
+    if (!post) return;
+    document.getElementById('overlayTag').textContent = post.category || 'Journal';
+    document.getElementById('overlayTitle').textContent = post.title;
+    document.getElementById('overlayAuthor').textContent = post.author || 'Ficti Garments';
+    document.getElementById('overlayDate').textContent = formatDate(post.published_at);
+    var bodyEl = document.getElementById('overlayBody');
+    var phEl = document.getElementById('overlayPlaceholder');
+    if (post.body) {
+        bodyEl.innerHTML = post.body.split('\n\n').map(function(p) { return '<p>' + escapeHTML(p) + '</p>'; }).join('');
+        phEl.style.display = 'none';
+    } else {
+        bodyEl.innerHTML = '';
+        phEl.style.display = 'block';
+    }
+    document.getElementById('postOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+};
+
+window.closePost = function() {
+    document.getElementById('postOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+};
+
+window.doSubscribe = async function() {
+    var name = document.getElementById('nlName').value.trim();
+    var email = document.getElementById('nlEmail').value.trim();
+    var errEl = document.getElementById('nlError');
+    if (!name) { errEl.textContent = 'Please enter your name.'; return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email.'; return; }
+    errEl.textContent = '';
+    var res = await supabase.from('newsletter_subscribers').upsert({ email: email }, { onConflict: 'email' });
+    if (res.error) { errEl.textContent = 'Something went wrong. Please try again.'; return; }
+    fetch('https://nusuluxjeckjcdgxzgyf.supabase.co/functions/v1/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_i8jwxXfkwQKCApZOCFu8SA_JrwICvqK' },
+        body: JSON.stringify({ email: email, first_name: name.split(' ')[0], last_name: name.split(' ').slice(1).join(' ') })
+    }).catch(function() {});
+    document.getElementById('nlFormInner').style.display = 'none';
+    document.getElementById('nlSuccess').style.display = 'block';
+};
+
+loadPosts();
+checkAdmin();
+</script>
+
 <script>
 function toggleMenu() {
     var h = document.getElementById('hamburger');
@@ -267,20 +373,6 @@ function showSection(sec) {
 }
 if (window.location.hash === '#newsletter') showSection('newsletter');
 function toggleChip(btn) { btn.classList.toggle('selected'); }
-function doSubscribe() {
-    var name = document.getElementById('nlName').value.trim();
-    var email = document.getElementById('nlEmail').value.trim();
-    var errEl = document.getElementById('nlError');
-    if (!name) { errEl.textContent = 'Please enter your name.'; return; }
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email.'; return; }
-    errEl.textContent = '';
-    var subs = JSON.parse(localStorage.getItem('fictiNewsletter') || '[]');
-    var exists = false;
-    for (var i = 0; i < subs.length; i++) { if (subs[i].email === email) { exists = true; break; } }
-    if (!exists) { subs.push({ name: name, email: email, date: new Date().toISOString() }); localStorage.setItem('fictiNewsletter', JSON.stringify(subs)); }
-    document.getElementById('nlFormInner').style.display = 'none';
-    document.getElementById('nlSuccess').style.display = 'block';
-}
 </script>
 </body>
 </html>

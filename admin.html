@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Ficti Garments</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Cormorant+SC:wght@300;400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root { --cream: #F5EAD0; --cream-mid: #EDE0C4; --crimson: #8B1818; --black: #0D0D0D; --charcoal: #141414; --panel: #111111; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--black); color: var(--cream); min-height: 100vh; }
+        /* Auth gate */
+        #authGate { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 40px; }
+        .auth-box { background: var(--charcoal); padding: 60px 52px; border: 1px solid rgba(245,234,208,0.07); max-width: 420px; width: 100%; text-align: center; }
+        .auth-logo { font-family: 'Cormorant SC', serif; font-size: 13px; letter-spacing: 0.28em; color: var(--cream); margin-bottom: 8px; }
+        .auth-kicker { font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(245,234,208,0.3); margin-bottom: 40px; }
+        .auth-field { margin-bottom: 20px; text-align: left; }
+        .auth-field label { display: block; font-size: 8px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,234,208,0.4); margin-bottom: 8px; }
+        .auth-field input { display: block; width: 100%; height: 48px; background: transparent; border: none; border-bottom: 1px solid rgba(245,234,208,0.15); padding: 0 4px; font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--cream); outline: none; transition: border-color 0.2s; }
+        .auth-field input:focus { border-bottom-color: rgba(245,234,208,0.5); }
+        .auth-btn { display: block; width: 100%; height: 50px; background: var(--cream); border: none; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--black); cursor: pointer; transition: background 0.2s; margin-top: 28px; }
+        .auth-btn:hover { background: var(--cream-mid); }
+        .auth-err { font-size: 10px; color: var(--crimson); margin-top: 12px; min-height: 16px; }
+        /* Admin layout */
+        #adminApp { display: none; }
+        .admin-nav { position: fixed; top: 0; left: 0; right: 0; height: 56px; background: var(--charcoal); border-bottom: 1px solid rgba(245,234,208,0.07); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; z-index: 100; }
+        .admin-brand { font-family: 'Cormorant SC', serif; font-size: 13px; letter-spacing: 0.22em; color: var(--cream); }
+        .admin-brand span { font-family: 'Montserrat', sans-serif; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,234,208,0.3); margin-left: 12px; }
+        .admin-actions { display: flex; align-items: center; gap: 20px; }
+        .btn-sm { padding: 8px 20px; font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; border: none; }
+        .btn-new { background: var(--crimson); color: var(--cream); }
+        .btn-new:hover { background: #a01e1e; }
+        .btn-signout { background: transparent; color: rgba(245,234,208,0.35); border: 1px solid rgba(245,234,208,0.12); }
+        .btn-signout:hover { color: var(--cream); border-color: rgba(245,234,208,0.3); }
+        .btn-view { background: transparent; color: rgba(245,234,208,0.35); border: 1px solid rgba(245,234,208,0.12); text-decoration: none; display: inline-flex; align-items: center; }
+        .btn-view:hover { color: var(--cream); }
+        .admin-main { margin-top: 56px; display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 56px); }
+        /* Posts list sidebar */
+        .posts-sidebar { background: var(--panel); border-right: 1px solid rgba(245,234,208,0.06); overflow-y: auto; max-height: calc(100vh - 56px); position: sticky; top: 56px; }
+        .sidebar-header { padding: 24px 20px 16px; border-bottom: 1px solid rgba(245,234,208,0.06); }
+        .sidebar-title { font-size: 8px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(245,234,208,0.3); }
+        .post-item { padding: 16px 20px; border-bottom: 1px solid rgba(245,234,208,0.04); cursor: pointer; transition: background 0.15s; }
+        .post-item:hover { background: rgba(245,234,208,0.03); }
+        .post-item.active { background: rgba(139,24,24,0.12); border-left: 2px solid var(--crimson); }
+        .post-item-title { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 300; color: var(--cream); line-height: 1.3; margin-bottom: 6px; }
+        .post-item-meta { display: flex; align-items: center; gap: 8px; }
+        .post-badge { font-size: 7px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; }
+        .badge-pub { background: rgba(139,24,24,0.2); color: var(--crimson); }
+        .badge-draft { background: rgba(245,234,208,0.06); color: rgba(245,234,208,0.3); }
+        .post-item-date { font-size: 8px; color: rgba(245,234,208,0.2); letter-spacing: 0.08em; }
+        .no-posts { padding: 40px 20px; text-align: center; font-size: 10px; color: rgba(245,234,208,0.2); line-height: 1.7; }
+        /* Editor panel */
+        .editor-panel { padding: 40px 52px; overflow-y: auto; }
+        .editor-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; }
+        .editor-empty-icon { font-family: 'Cormorant Garamond', serif; font-size: 64px; color: rgba(245,234,208,0.05); margin-bottom: 16px; }
+        .editor-empty-text { font-size: 10px; color: rgba(245,234,208,0.2); letter-spacing: 0.1em; line-height: 1.8; }
+        .editor-form { max-width: 780px; }
+        .editor-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 36px; padding-bottom: 20px; border-bottom: 1px solid rgba(245,234,208,0.07); }
+        .editor-toolbar-left { display: flex; align-items: center; gap: 12px; }
+        .btn-save { background: var(--crimson); color: var(--cream); padding: 10px 28px; font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; border: none; cursor: pointer; transition: background 0.2s; }
+        .btn-save:hover { background: #a01e1e; }
+        .btn-delete { background: transparent; color: rgba(245,234,208,0.25); border: 1px solid rgba(245,234,208,0.1); padding: 10px 20px; font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+        .btn-delete:hover { color: var(--crimson); border-color: var(--crimson); }
+        .pub-toggle { display: flex; align-items: center; gap: 10px; }
+        .pub-toggle label { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,234,208,0.35); cursor: pointer; }
+        .toggle-switch { position: relative; width: 36px; height: 20px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; inset: 0; background: rgba(245,234,208,0.1); border-radius: 20px; cursor: pointer; transition: 0.2s; }
+        .toggle-slider::before { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; bottom: 3px; background: rgba(245,234,208,0.3); border-radius: 50%; transition: 0.2s; }
+        input:checked + .toggle-slider { background: var(--crimson); }
+        input:checked + .toggle-slider::before { transform: translateX(16px); background: var(--cream); }
+        .field { margin-bottom: 28px; }
+        .field label { display: block; font-size: 8px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(245,234,208,0.4); margin-bottom: 10px; }
+        .field input, .field select { display: block; width: 100%; height: 48px; background: var(--panel); border: 1px solid rgba(245,234,208,0.1); padding: 0 14px; font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--cream); outline: none; transition: border-color 0.2s; }
+        .field input:focus, .field select:focus { border-color: rgba(245,234,208,0.3); }
+        .field select option { background: var(--charcoal); }
+        .field textarea { display: block; width: 100%; background: var(--panel); border: 1px solid rgba(245,234,208,0.1); padding: 14px; font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--cream); outline: none; transition: border-color 0.2s; resize: vertical; line-height: 1.6; }
+        .field textarea:focus { border-color: rgba(245,234,208,0.3); }
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .field-hint { font-size: 9px; color: rgba(245,234,208,0.2); margin-top: 6px; letter-spacing: 0.06em; }
+        .save-status { font-size: 9px; letter-spacing: 0.14em; color: rgba(245,234,208,0.3); }
+        .save-status.ok { color: #6B9E6B; }
+        .save-status.err { color: var(--crimson); }
+        .body-hint { font-size: 9px; color: rgba(245,234,208,0.2); margin-top: 6px; line-height: 1.6; }
+        @media (max-width: 900px) {
+            .admin-main { grid-template-columns: 1fr; }
+            .posts-sidebar { position: static; max-height: 280px; }
+            .editor-panel { padding: 28px 20px; }
+            .field-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Auth gate (shown if not logged in as admin) -->
+<div id="authGate">
+    <div class="auth-box">
+        <div class="auth-logo">Ficti Garments</div>
+        <div class="auth-kicker">Admin Panel</div>
+        <div class="auth-field"><label for="adminEmail">Email</label><input type="email" id="adminEmail" placeholder="admin@example.com"></div>
+        <div class="auth-field"><label for="adminPass">Password</label><input type="password" id="adminPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+        <button class="auth-btn" onclick="doAdminLogin()">Sign In</button>
+        <div class="auth-err" id="authErr"></div>
+    </div>
+</div>
+
+<!-- Admin app (shown after auth) -->
+<div id="adminApp">
+    <nav class="admin-nav">
+        <div class="admin-brand">Ficti Garments <span>Admin</span></div>
+        <div class="admin-actions">
+            <a href="blog.html" class="btn-sm btn-view">View Blog</a>
+            <button class="btn-sm btn-new" onclick="newPost()">+ New Post</button>
+            <button class="btn-sm btn-signout" onclick="doSignOut()">Sign Out</button>
+        </div>
+    </nav>
+    <div class="admin-main">
+        <div class="posts-sidebar">
+            <div class="sidebar-header"><div class="sidebar-title">All Posts</div></div>
+            <div id="postsList"><div class="no-posts">Loading…</div></div>
+        </div>
+        <div class="editor-panel" id="editorPanel">
+            <div class="editor-empty">
+                <div class="editor-empty-icon">◆</div>
+                <div class="editor-empty-text">Select a post to edit<br>or create a new one.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const supabase = createClient(
+    'https://nusuluxjeckjcdgxzgyf.supabase.co',
+    'sb_publishable_i8jwxXfkwQKCApZOCFu8SA_JrwICvqK'
+);
+
+const ADMIN_EMAIL = 'llc.multum@gmail.com';
+var allPosts = [];
+var currentId = null;
+
+async function init() {
+    var { data: { session } } = await supabase.auth.getSession();
+    if (session && session.user.email === ADMIN_EMAIL) {
+        showApp();
+    }
+}
+
+function showApp() {
+    document.getElementById('authGate').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    loadAllPosts();
+}
+
+window.doAdminLogin = async function() {
+    var email = document.getElementById('adminEmail').value.trim();
+    var pass = document.getElementById('adminPass').value;
+    var errEl = document.getElementById('authErr');
+    errEl.textContent = '';
+    var { data, error } = await supabase.auth.signInWithPassword({ email: email, password: pass });
+    if (error) { errEl.textContent = error.message; return; }
+    if (data.session.user.email !== ADMIN_EMAIL) {
+        await supabase.auth.signOut();
+        errEl.textContent = 'This account does not have admin access.';
+        return;
+    }
+    showApp();
+};
+
+window.doSignOut = async function() {
+    await supabase.auth.signOut();
+    window.location.href = 'blog.html';
+};
+
+async function loadAllPosts() {
+    var { data, error } = await supabase
+        .from('posts')
+        .select('id, title, published, published_at, created_at')
+        .order('created_at', { ascending: false });
+    if (error || !data) { document.getElementById('postsList').innerHTML = '<div class="no-posts">Could not load posts.</div>'; return; }
+    allPosts = data;
+    renderSidebar();
+}
+
+function renderSidebar() {
+    if (!allPosts.length) {
+        document.getElementById('postsList').innerHTML = '<div class="no-posts">No posts yet.<br>Click "+ New Post" to get started.</div>';
+        return;
+    }
+    document.getElementById('postsList').innerHTML = allPosts.map(function(p) {
+        var active = p.id === currentId ? ' active' : '';
+        var date = p.published_at ? new Date(p.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Draft';
+        var badge = p.published
+            ? '<span class="post-badge badge-pub">Published</span>'
+            : '<span class="post-badge badge-draft">Draft</span>';
+        return '<div class="post-item' + active + '" onclick="selectPost(\'' + p.id + '\')">'
+            + '<div class="post-item-title">' + escapeHTML(p.title || 'Untitled') + '</div>'
+            + '<div class="post-item-meta">' + badge + '<span class="post-item-date">' + date + '</span></div>'
+            + '</div>';
+    }).join('');
+}
+
+window.selectPost = async function(id) {
+    currentId = id;
+    renderSidebar();
+    var { data: post, error } = await supabase.from('posts').select('*').eq('id', id).single();
+    if (error || !post) return;
+    renderEditor(post);
+};
+
+window.newPost = function() {
+    currentId = null;
+    renderSidebar();
+    renderEditor({
+        id: null, title: '', slug: '', category: 'Journal', author: 'Ficti Garments',
+        excerpt: '', body: '', published: false, featured: false, published_at: null
+    });
+};
+
+function slugify(str) {
+    return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function escapeHTML(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderEditor(post) {
+    var isNew = !post.id;
+    var panel = document.getElementById('editorPanel');
+    panel.innerHTML = '<div class="editor-form">'
+        + '<div class="editor-toolbar">'
+        + '<div class="editor-toolbar-left">'
+        + '<button class="btn-save" onclick="savePost()">Save</button>'
+        + (!isNew ? '<button class="btn-delete" onclick="deletePost()">Delete</button>' : '')
+        + '<span class="save-status" id="saveStatus"></span>'
+        + '</div>'
+        + '<div class="pub-toggle">'
+        + '<label for="pubToggle">Published</label>'
+        + '<label class="toggle-switch"><input type="checkbox" id="pubToggle"' + (post.published ? ' checked' : '') + '><span class="toggle-slider"></span></label>'
+        + '</div>'
+        + '</div>'
+
+        + '<div class="field"><label>Title</label>'
+        + '<input type="text" id="fTitle" value="' + escapeHTML(post.title) + '" oninput="autoSlug()" placeholder="Post title">'
+        + '</div>'
+
+        + '<div class="field-row">'
+        + '<div class="field"><label>Slug (URL)</label>'
+        + '<input type="text" id="fSlug" value="' + escapeHTML(post.slug) + '" placeholder="url-friendly-title">'
+        + '<div class="field-hint">blog.html will link to: /post/[slug]</div>'
+        + '</div>'
+        + '<div class="field"><label>Category</label>'
+        + '<select id="fCategory">'
+        + ['Journal','Course Culture','Design & Craft','Players & Perspective','Season Preview','The Game','Care & Longevity','Founders'].map(function(c) {
+            return '<option value="' + c + '"' + (post.category === c ? ' selected' : '') + '>' + c + '</option>';
+        }).join('')
+        + '</select>'
+        + '</div>'
+        + '</div>'
+
+        + '<div class="field"><label>Author</label>'
+        + '<input type="text" id="fAuthor" value="' + escapeHTML(post.author) + '" placeholder="Author name">'
+        + '</div>'
+
+        + '<div class="field"><label>Excerpt (shown on blog listing)</label>'
+        + '<textarea id="fExcerpt" rows="3" placeholder="A short description of the post…">' + escapeHTML(post.excerpt) + '</textarea>'
+        + '</div>'
+
+        + '<div class="field"><label>Body</label>'
+        + '<textarea id="fBody" rows="18" placeholder="Write the full story here…\n\nSeparate paragraphs with a blank line.">' + escapeHTML(post.body) + '</textarea>'
+        + '<div class="body-hint">Separate paragraphs with a blank line. Basic formatting only for now.</div>'
+        + '</div>'
+
+        + '<div class="field"><label><input type="checkbox" id="fFeatured"' + (post.featured ? ' checked' : '') + ' style="margin-right:8px;">Feature this post at the top of the blog</label>'
+        + '</div>'
+        + '</div>';
+}
+
+window.autoSlug = function() {
+    var titleEl = document.getElementById('fTitle');
+    var slugEl = document.getElementById('fSlug');
+    if (slugEl && titleEl) slugEl.value = slugify(titleEl.value);
+};
+
+window.savePost = async function() {
+    var statusEl = document.getElementById('saveStatus');
+    statusEl.textContent = 'Saving…';
+    statusEl.className = 'save-status';
+
+    var title = document.getElementById('fTitle').value.trim();
+    var slug = document.getElementById('fSlug').value.trim() || slugify(title);
+    var category = document.getElementById('fCategory').value;
+    var author = document.getElementById('fAuthor').value.trim();
+    var excerpt = document.getElementById('fExcerpt').value.trim();
+    var body = document.getElementById('fBody').value.trim();
+    var published = document.getElementById('pubToggle').checked;
+    var featured = document.getElementById('fFeatured').checked;
+
+    if (!title) { statusEl.textContent = 'Title is required.'; statusEl.className = 'save-status err'; return; }
+    if (!slug) { statusEl.textContent = 'Slug is required.'; statusEl.className = 'save-status err'; return; }
+
+    var payload = {
+        title: title, slug: slug, category: category, author: author,
+        excerpt: excerpt, body: body, published: published, featured: featured,
+        published_at: published ? (new Date().toISOString()) : null
+    };
+
+    var res;
+    if (currentId) {
+        res = await supabase.from('posts').update(payload).eq('id', currentId).select().single();
+    } else {
+        res = await supabase.from('posts').insert(payload).select().single();
+    }
+
+    if (res.error) {
+        statusEl.textContent = res.error.message;
+        statusEl.className = 'save-status err';
+        return;
+    }
+
+    currentId = res.data.id;
+    statusEl.textContent = 'Saved ✓';
+    statusEl.className = 'save-status ok';
+    setTimeout(function() { if (statusEl) statusEl.textContent = ''; }, 3000);
+
+    await loadAllPosts();
+};
+
+window.deletePost = async function() {
+    if (!currentId) return;
+    if (!confirm('Delete this post permanently?')) return;
+    var { error } = await supabase.from('posts').delete().eq('id', currentId);
+    if (error) { alert('Delete failed: ' + error.message); return; }
+    currentId = null;
+    await loadAllPosts();
+    document.getElementById('editorPanel').innerHTML = '<div class="editor-empty"><div class="editor-empty-icon">◆</div><div class="editor-empty-text">Post deleted.</div></div>';
+};
+
+init();
+</script>
+</body>
+</html>
