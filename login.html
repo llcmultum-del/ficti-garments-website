@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="favicon-64.png" sizes="64x64">
+    <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="favicon-180.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — Ficti Garments</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+SC:wght@300;400;500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --cream: #F5EAD0; --cream-mid: #EDE0C4; --cream-dark: #D8CAA8;
+            --crimson: #8B1818; --crimson-deep: #6B1212;
+            --black: #0D0D0D; --charcoal: #141414; --mid: #6B6B6B; --light: #A8A8A8;
+        }
+        body { font-family: 'Montserrat', sans-serif; background: var(--black); color: var(--cream); min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* NAV */
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; background: rgba(13,13,13,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(139,24,24,0.2); }
+        .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 8px; }
+        .hamburger span { display: block; width: 20px; height: 1px; background: rgba(245,234,208,0.7); transition: all 0.3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+        .nav-logo { font-family: 'Cormorant SC', serif; font-size: 15px; font-weight: 400; letter-spacing: 0.28em; color: var(--cream); text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
+        .nav-right { min-width: 80px; }
+        .menu-overlay { display: none; position: fixed; inset: 0; background: rgba(13,13,13,0.98); z-index: 190; flex-direction: column; align-items: center; justify-content: center; gap: 36px; }
+        .menu-overlay.open { display: flex; }
+        .menu-overlay a { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 5vw, 50px); font-weight: 300; color: var(--cream); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
+        .menu-overlay a:hover { color: var(--crimson); }
+        .menu-overlay .menu-divider { width: 40px; height: 1px; background: rgba(245,234,208,0.12); }
+        .menu-overlay .menu-account { font-size: clamp(14px, 2vw, 18px); letter-spacing: 0.18em; color: rgba(245,234,208,0.5); }
+        .menu-overlay .menu-account:hover { color: var(--cream); }
+        .menu-close { position: absolute; top: 22px; right: 28px; background: none; border: none; color: rgba(245,234,208,0.4); cursor: pointer; font-size: 28px; line-height: 1; padding: 0; transition: color 0.2s; }
+        .menu-close:hover { color: var(--cream); }
+
+        /* LAYOUT */
+        .page-wrap { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; padding-top: 64px; }
+
+        /* LEFT PANEL — editorial */
+        .panel-left { background: var(--charcoal); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 64px; position: relative; overflow: hidden; }
+        .panel-left::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%, rgba(139,24,24,0.12) 0%, transparent 65%); pointer-events: none; }
+        .brand-mark { width: 80px; height: 80px; margin: 0 auto 44px; }
+        .brand-mark svg { width: 100%; height: 100%; }
+        .panel-tagline { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 3.5vw, 46px); font-weight: 300; color: var(--cream); text-align: center; letter-spacing: 0.02em; line-height: 1.2; margin-bottom: 20px; }
+        .panel-sub { font-size: 10px; font-weight: 400; color: rgba(245,234,208,0.4); letter-spacing: 0.12em; text-align: center; line-height: 1.9; max-width: 300px; }
+        .panel-divider { width: 1px; height: 60px; background: rgba(245,234,208,0.1); margin: 36px auto; }
+        .member-perks { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 280px; }
+        .perk-row { display: flex; align-items: flex-start; gap: 14px; }
+        .perk-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--crimson); margin-top: 6px; flex-shrink: 0; }
+        .perk-text { font-size: 10px; color: rgba(245,234,208,0.5); letter-spacing: 0.08em; line-height: 1.7; }
+
+        /* RIGHT PANEL — form */
+        .panel-right { background: var(--black); display: flex; align-items: center; justify-content: center; padding: 80px 64px; }
+        .form-wrap { width: 100%; max-width: 380px; }
+
+        .mode-toggle { display: flex; gap: 0; margin-bottom: 52px; border-bottom: 1px solid rgba(245,234,208,0.1); }
+        .mode-btn { flex: 1; padding: 12px 0; background: none; border: none; font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(245,234,208,0.35); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.25s; }
+        .mode-btn:hover { color: rgba(245,234,208,0.7); }
+        .mode-btn.active { color: var(--cream); border-bottom-color: var(--crimson); }
+
+        .form-kicker { font-size: 9px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: var(--crimson); margin-bottom: 12px; }
+        .form-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px, 3vw, 40px); font-weight: 300; color: var(--cream); letter-spacing: 0.02em; margin-bottom: 36px; }
+
+        .field { margin-bottom: 24px; }
+        .field-label { display: block; font-size: 8px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(245,234,208,0.5); margin-bottom: 8px; }
+        .field input { display: block; width: 100%; height: 48px; background: transparent; border: none; border-bottom: 1px solid rgba(245,234,208,0.2); padding: 0 4px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 400; color: var(--cream); outline: none; transition: border-color 0.2s; }
+        .field input::placeholder { color: rgba(245,234,208,0.2); }
+        .field input:focus { border-bottom-color: rgba(245,234,208,0.6); }
+        .field input.error { border-bottom-color: var(--crimson); }
+
+        .member-upgrade { border: 1px solid rgba(139,24,24,0.3); padding: 20px; margin-bottom: 28px; background: rgba(139,24,24,0.06); display: none; }
+        .member-upgrade.visible { display: block; }
+        .upgrade-label { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+        .upgrade-label input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; border: 1px solid rgba(245,234,208,0.3); background: transparent; flex-shrink: 0; margin-top: 2px; cursor: pointer; position: relative; transition: all 0.2s; }
+        .upgrade-label input[type="checkbox"]:checked { background: var(--crimson); border-color: var(--crimson); }
+        .upgrade-label input[type="checkbox"]:checked::after { content: ''; position: absolute; left: 4px; top: 1px; width: 6px; height: 10px; border: 1px solid #fff; border-top: none; border-left: none; transform: rotate(45deg); }
+        .upgrade-copy .upgrade-title { font-size: 9px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,234,208,0.8); margin-bottom: 4px; }
+        .upgrade-copy .upgrade-desc { font-size: 10px; color: rgba(245,234,208,0.4); line-height: 1.7; }
+
+        .btn-primary { display: block; width: 100%; height: 50px; background: var(--cream); border: none; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--black); cursor: pointer; transition: background 0.2s; margin-bottom: 20px; }
+        .btn-primary:hover { background: var(--cream-mid); }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .form-error { font-size: 10px; color: var(--crimson); letter-spacing: 0.08em; margin-bottom: 16px; min-height: 16px; }
+        .form-footer { font-size: 10px; color: rgba(245,234,208,0.3); letter-spacing: 0.06em; text-align: center; line-height: 1.8; }
+        .form-footer a { color: rgba(245,234,208,0.6); text-decoration: underline; cursor: pointer; }
+        .forgot-link { display: block; text-align: right; margin-top: 8px; margin-bottom: 24px; font-size: 9px; letter-spacing: 0.12em; color: rgba(245,234,208,0.3); cursor: pointer; transition: color 0.2s; }
+        .forgot-link:hover { color: rgba(245,234,208,0.7); }
+
+        .names-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        @media (max-width: 768px) {
+            .page-wrap { grid-template-columns: 1fr; }
+            .panel-left { display: none; }
+            .panel-right { padding: 60px 28px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav id="main-nav">
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="nav-logo">Ficti Garments</a>
+    <div class="nav-right"></div>
+</nav>
+
+<div class="menu-overlay" id="menuOverlay">
+    <button class="menu-close" onclick="toggleMenu()">×</button>
+    <a href="index.html" onclick="toggleMenu()">Home</a>
+    <a href="collections.html" onclick="toggleMenu()">Collections</a>
+    <a href="members.html" onclick="toggleMenu()">Members</a>
+    <a href="blog.html" onclick="toggleMenu()">Blog</a>
+    <a href="about.html" onclick="toggleMenu()">About</a>
+    <a href="contact.html" onclick="toggleMenu()">Contact</a>
+    <div class="menu-divider"></div>
+    <a href="account.html" class="menu-account" onclick="toggleMenu()">My Account</a>
+</div>
+
+<div class="page-wrap">
+
+    <!-- LEFT PANEL -->
+    <div class="panel-left">
+        <div class="brand-mark">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="38" fill="none" stroke="rgba(245,234,208,0.12)" stroke-width="1"/>
+                <circle cx="40" cy="40" r="28" fill="none" stroke="rgba(245,234,208,0.08)" stroke-width="1"/>
+                <text x="40" y="47" text-anchor="middle" font-family="serif" font-size="22" fill="rgba(245,234,208,0.45)" letter-spacing="2">FG</text>
+            </svg>
+        </div>
+        <p class="panel-tagline">Crafted for those who play with intention.</p>
+        <p class="panel-sub">Join the Ficti Garments community for early access, exclusive drops, and stories from the course.</p>
+        <div class="panel-divider"></div>
+        <div class="member-perks">
+            <div class="perk-row">
+                <div class="perk-dot"></div>
+                <p class="perk-text">Early access to new collections before public release</p>
+            </div>
+            <div class="perk-row">
+                <div class="perk-dot"></div>
+                <p class="perk-text">Exclusive member pricing on select styles each season</p>
+            </div>
+            <div class="perk-row">
+                <div class="perk-dot"></div>
+                <p class="perk-text">Private invitations to trunk shows and launch events</p>
+            </div>
+            <div class="perk-row">
+                <div class="perk-dot"></div>
+                <p class="perk-text">First access to limited-run tournament editions</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="panel-right">
+        <div class="form-wrap">
+            <div class="mode-toggle">
+                <button class="mode-btn active" id="btnSignIn" onclick="setMode('signin')">Sign In</button>
+                <button class="mode-btn" id="btnCreate" onclick="setMode('create')">Create Account</button>
+            </div>
+
+            <!-- SIGN IN -->
+            <div id="formSignIn">
+                <p class="form-kicker">Welcome Back</p>
+                <h1 class="form-heading">Sign In</h1>
+                <div class="field">
+                    <label class="field-label" for="siEmail">Email Address</label>
+                    <input type="email" id="siEmail" placeholder="your@email.com">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="siPassword">Password</label>
+                    <input type="password" id="siPassword" placeholder="••••••••">
+                </div>
+                <span class="forgot-link" onclick="showForgot()">Forgot password?</span>
+                <p class="form-error" id="siError"></p>
+                <button class="btn-primary" onclick="doSignIn()">Sign In</button>
+                <p class="form-footer">Don't have an account? <a onclick="setMode('create')">Create one</a></p>
+            </div>
+
+            <!-- CREATE ACCOUNT -->
+            <div id="formCreate" style="display:none;">
+                <p class="form-kicker">Join Ficti Garments</p>
+                <h1 class="form-heading">Create Account</h1>
+                <div class="names-row">
+                    <div class="field">
+                        <label class="field-label" for="caFirst">First Name</label>
+                        <input type="text" id="caFirst" placeholder="James">
+                    </div>
+                    <div class="field">
+                        <label class="field-label" for="caLast">Last Name</label>
+                        <input type="text" id="caLast" placeholder="Avery">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="caEmail">Email Address</label>
+                    <input type="email" id="caEmail" placeholder="your@email.com">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="caPassword">Password</label>
+                    <input type="password" id="caPassword" placeholder="Minimum 8 characters">
+                </div>
+
+                <div class="member-upgrade visible" id="memberUpgrade">
+                    <label class="upgrade-label">
+                        <input type="checkbox" id="caMember">
+                        <div class="upgrade-copy">
+                            <p class="upgrade-title">Join as a Member</p>
+                            <p class="upgrade-desc">Unlock early drops, exclusive pricing, and private events. Membership is complimentary during our founding year.</p>
+                        </div>
+                    </label>
+                </div>
+
+                <p class="form-error" id="caError"></p>
+                <button class="btn-primary" onclick="doCreate()">Create Account</button>
+                <p class="form-footer">By creating an account you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a></p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const supabase = createClient('https://nusuluxjeckjcdgxzgyf.supabase.co', 'sb_publishable_i8jwxXfkwQKCApZOCFu8SA_JrwICvqK');
+
+window.toggleMenu = function() {
+    var h = document.getElementById('hamburger');
+    var m = document.getElementById('menuOverlay');
+    h.classList.toggle('open');
+    m.classList.toggle('open');
+    document.body.style.overflow = m.classList.contains('open') ? 'hidden' : '';
+};
+
+window.setMode = function(mode) {
+    var isSI = mode === 'signin';
+    document.getElementById('btnSignIn').classList.toggle('active', isSI);
+    document.getElementById('btnCreate').classList.toggle('active', !isSI);
+    document.getElementById('formSignIn').style.display = isSI ? 'block' : 'none';
+    document.getElementById('formCreate').style.display = isSI ? 'none' : 'block';
+    document.getElementById('siError').textContent = '';
+    document.getElementById('caError').textContent = '';
+};
+
+var params = new URLSearchParams(window.location.search);
+if (params.get('mode') === 'create') window.setMode('create');
+
+// Redirect if already logged in
+supabase.auth.getSession().then(({ data: { session } }) => {
+    if (session) window.location.href = params.get('redirect') || 'account.html';
+});
+
+window.doSignIn = async function() {
+    var email = document.getElementById('siEmail').value.trim();
+    var pass = document.getElementById('siPassword').value;
+    var errEl = document.getElementById('siError');
+    var btn = document.querySelector('#formSignIn .btn-primary');
+
+    if (!email || !pass) { errEl.textContent = 'Please fill in all fields.'; return; }
+    btn.disabled = true; btn.textContent = 'Signing in…';
+
+    var { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+    if (error) {
+        errEl.textContent = error.message === 'Invalid login credentials' ? 'Incorrect email or password.' : error.message;
+        btn.disabled = false; btn.textContent = 'Sign In';
+        return;
+    }
+    window.location.href = params.get('redirect') || 'account.html';
+};
+
+window.doCreate = async function() {
+    var first = document.getElementById('caFirst').value.trim();
+    var last = document.getElementById('caLast').value.trim();
+    var email = document.getElementById('caEmail').value.trim();
+    var pass = document.getElementById('caPassword').value;
+    var isMember = document.getElementById('caMember').checked;
+    var errEl = document.getElementById('caError');
+    var btn = document.querySelector('#formCreate .btn-primary');
+
+    if (!first || !last) { errEl.textContent = 'Please enter your first and last name.'; return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email address.'; return; }
+    if (pass.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; return; }
+
+    btn.disabled = true; btn.textContent = 'Creating Account…';
+
+    var { error } = await supabase.auth.signUp({
+        email,
+        password: pass,
+        options: {
+            data: { first_name: first, last_name: last, newsletter: false }
+        }
+    });
+
+    if (error) {
+        errEl.textContent = error.message;
+        btn.disabled = false; btn.textContent = 'Create Account';
+        return;
+    }
+
+    // If user wants membership, mark it after signup
+    if (isMember) {
+        var { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            await supabase.from('profiles').update({ membership_tier: 'I' }).eq('id', session.user.id);
+        }
+    }
+
+    window.location.href = params.get('redirect') || 'account.html';
+};
+
+window.showForgot = async function() {
+    var email = document.getElementById('siEmail').value.trim();
+    var errEl = document.getElementById('siError');
+    if (!email) { errEl.textContent = 'Enter your email above first.'; return; }
+    errEl.style.color = 'rgba(245,234,208,0.5)';
+    errEl.textContent = 'Sending reset link…';
+    await supabase.auth.resetPasswordForEmail(email);
+    errEl.textContent = 'If that email has an account, a reset link was sent.';
+    setTimeout(() => { errEl.style.color = ''; errEl.textContent = ''; }, 4000);
+};
+</script>
+</body>
+</html>

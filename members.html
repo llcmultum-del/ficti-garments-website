@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="favicon-64.png" sizes="64x64">
+    <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="favicon-180.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Inner Circle — Ficti Garments</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --cream: #F5EAD0; --cream-mid: #EDE0C4; --cream-dark: #E3D4B2;
+            --crimson: #8B1818; --crimson-deep: #6B1212;
+            --black: #0D0D0D; --charcoal: #141414; --charcoal-2: #1C1C1C; --mid: #4A4A4A;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--black); color: var(--cream); overflow-x: hidden; }
+
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; background: rgba(13,13,13,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(139,24,24,0.28); }
+        .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 8px; }
+        .hamburger span { display: block; width: 22px; height: 1.5px; background: var(--cream); transition: all 0.3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+        .nav-logo { font-family: 'Cormorant SC', serif; font-size: 17px; font-weight: 500; letter-spacing: 0.22em; color: var(--cream); text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
+        .nav-right { display: flex; align-items: center; }
+        .menu-overlay { display: none; position: fixed; inset: 0; background: rgba(13,13,13,0.98); z-index: 190; flex-direction: column; align-items: center; justify-content: center; gap: 44px; }
+        .menu-overlay.open { display: flex; }
+        .menu-overlay a { font-family: 'Cormorant Garamond', serif; font-size: clamp(38px, 6vw, 58px); font-weight: 300; color: var(--cream); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
+        .menu-overlay a:hover { color: var(--crimson); }
+        .menu-close { position: absolute; top: 22px; right: 28px; background: none; border: none; color: rgba(245,234,208,0.45); cursor: pointer; font-size: 30px; line-height: 1; transition: color 0.2s; padding: 0; }
+        .menu-close:hover { color: var(--cream); }
+
+        /* HERO */
+        .members-hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 40px 80px;
+            position: relative;
+            overflow: hidden;
+            background: var(--black);
+        }
+        .members-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(45deg, rgba(139,24,24,0.06) 1px, transparent 1px),
+                linear-gradient(-45deg, rgba(139,24,24,0.06) 1px, transparent 1px);
+            background-size: 56px 56px;
+        }
+        .members-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 40%, rgba(139,24,24,0.12) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .hero-inner { position: relative; z-index: 2; max-width: 700px; }
+        .hero-seal { width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0 0 28px rgba(139,24,24,0.7)); margin-bottom: 36px; }
+        .hero-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.45em; text-transform: uppercase; color: var(--crimson); margin-bottom: 20px; }
+        .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px, 9vw, 100px); font-weight: 300; line-height: 0.92; color: var(--cream); margin-bottom: 28px; }
+        .hero-title em { font-style: italic; color: var(--crimson); }
+        .hero-sub { font-size: 13px; font-weight: 300; color: rgba(245,234,208,0.5); line-height: 1.8; max-width: 480px; margin: 0 auto 48px; letter-spacing: 0.04em; }
+
+        /* GATE — shown to non-members */
+        .gate {
+            background: rgba(20,20,20,0.9);
+            border: 1px solid rgba(139,24,24,0.3);
+            padding: 48px 40px;
+            max-width: 480px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .gate-icon { font-size: 28px; margin-bottom: 20px; opacity: .6; }
+        .gate-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; color: var(--cream); margin-bottom: 12px; }
+        .gate-text { font-size: 12px; color: rgba(245,234,208,0.45); line-height: 1.8; margin-bottom: 32px; }
+        .gate-btn { display: inline-block; padding: 14px 44px; border: 1px solid var(--crimson); color: var(--cream); font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; text-decoration: none; background: transparent; cursor: pointer; transition: background .25s, color .25s; }
+        .gate-btn:hover { background: var(--crimson); color: var(--cream); }
+        .gate-login { display: block; margin-top: 18px; font-size: 11px; color: rgba(245,234,208,0.35); letter-spacing: 0.08em; }
+        .gate-login a { color: rgba(245,234,208,0.6); text-decoration: underline; text-underline-offset: 3px; }
+        .gate-login a:hover { color: var(--cream); }
+
+        /* PERKS STRIP */
+        .perks-strip {
+            border-top: 1px solid rgba(245,234,208,0.07);
+            padding: 80px 60px;
+            background: var(--charcoal);
+        }
+        .perks-label { font-size: 10px; font-weight: 600; letter-spacing: 0.42em; text-transform: uppercase; color: var(--crimson); text-align: center; margin-bottom: 56px; }
+        .perks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; max-width: 900px; margin: 0 auto; }
+        .perk { text-align: center; }
+        .perk-icon { font-size: 22px; margin-bottom: 16px; opacity: .7; }
+        .perk-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--cream); margin-bottom: 10px; }
+        .perk-text { font-size: 12px; color: rgba(245,234,208,0.42); line-height: 1.8; }
+
+        /* MEMBER CONTENT (hidden until logged in) */
+        .member-content { display: none; }
+        .member-content.visible { display: block; }
+        .content-section { padding: 80px 60px; border-top: 1px solid rgba(245,234,208,0.07); }
+        .section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.42em; text-transform: uppercase; color: var(--crimson); margin-bottom: 36px; }
+        .drops-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1000px; }
+        .drop-card { background: var(--charcoal-2); border: 1px solid rgba(245,234,208,0.07); padding: 32px; }
+        .drop-badge { font-size: 9px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: var(--crimson); margin-bottom: 12px; }
+        .drop-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--cream); margin-bottom: 8px; }
+        .drop-text { font-size: 12px; color: rgba(245,234,208,0.45); line-height: 1.7; margin-bottom: 20px; }
+        .drop-date { font-size: 10px; letter-spacing: 0.2em; color: rgba(245,234,208,0.25); }
+        .member-greeting { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 300; color: rgba(245,234,208,0.5); margin-bottom: 8px; }
+        .member-name { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; color: var(--cream); margin-bottom: 4px; }
+        .member-tier { font-size: 9px; font-weight: 600; letter-spacing: 0.35em; text-transform: uppercase; color: var(--crimson); }
+
+        /* TIERS */
+        .tiers-section { padding: 80px 60px; background: var(--black); border-top: 1px solid rgba(245,234,208,0.07); }
+        .tiers-label { font-size: 10px; font-weight: 600; letter-spacing: 0.42em; text-transform: uppercase; color: var(--crimson); text-align: center; margin-bottom: 12px; }
+        .tiers-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 5vw, 52px); font-weight: 300; color: var(--cream); text-align: center; margin-bottom: 60px; }
+        .tiers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; max-width: 960px; margin: 0 auto; }
+        .tier-card { background: var(--charcoal); border: 1px solid rgba(245,234,208,0.07); padding: 48px 36px 40px; position: relative; display: flex; flex-direction: column; }
+        .tier-card.featured { border-color: var(--crimson); background: rgba(139,24,24,0.08); }
+        .tier-card.featured::before { content: 'Most Exclusive'; position: absolute; top: -1px; left: 50%; transform: translateX(-50%); background: var(--crimson); color: var(--cream); font-size: 8px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; padding: 4px 16px; white-space: nowrap; }
+        .tier-numeral { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; color: rgba(245,234,208,0.15); line-height: 1; margin-bottom: 20px; }
+        .tier-price { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300; color: var(--cream); line-height: 1; margin-bottom: 4px; }
+        .tier-price sup { font-size: 22px; vertical-align: super; }
+        .tier-period { font-size: 10px; letter-spacing: 0.2em; color: rgba(245,234,208,0.3); margin-bottom: 32px; }
+        .tier-divider { width: 24px; height: 1px; background: var(--crimson); margin-bottom: 28px; }
+        .tier-perks { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; flex: 1; }
+        .tier-perks li { font-size: 12px; color: rgba(245,234,208,0.55); line-height: 1.5; padding-left: 14px; position: relative; }
+        .tier-perks li::before { content: '&#9670;'; position: absolute; left: 0; color: var(--crimson); font-size: 6px; top: 4px; }
+        .tier-btn { display: block; text-align: center; padding: 14px 24px; border: 1px solid rgba(245,234,208,0.2); color: rgba(245,234,208,0.7); font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; text-decoration: none; transition: border-color .25s, color .25s, background .25s; }
+        .tier-btn:hover { border-color: var(--crimson); color: var(--cream); background: rgba(139,24,24,0.15); }
+        .tier-card.featured .tier-btn { border-color: var(--crimson); color: var(--cream); background: var(--crimson); }
+        .tier-card.featured .tier-btn:hover { background: var(--crimson-deep); }
+
+        /* FOOTER */
+        footer { background: var(--black); padding: 64px 60px 36px; border-top: 1px solid rgba(245,234,208,0.06); }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .footer-copy { font-size: 11px; color: rgba(255,255,255,0.18); }
+        .footer-logo-row { display: flex; align-items: center; gap: 12px; }
+        .footer-seal-img { width: 32px; height: 32px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(139,24,24,0.3)); }
+        .footer-wordmark { font-family: 'Cormorant SC', serif; font-size: 16px; font-weight: 500; letter-spacing: 0.22em; color: rgba(245,234,208,0.35); }
+
+        @media (max-width: 768px) {
+            nav { padding: 0 24px; }
+            .perks-strip { padding: 60px 24px; }
+            .perks-grid { grid-template-columns: 1fr; gap: 32px; }
+            .content-section { padding: 60px 24px; }
+            .drops-grid { grid-template-columns: 1fr; }
+            .tiers-section { padding: 60px 24px; }
+            .tiers-grid { grid-template-columns: 1fr; gap: 16px; }
+            footer { padding: 48px 24px 28px; }
+            .footer-bottom { flex-direction: column; gap: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav id="main-nav">
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="nav-logo">Ficti Garments</a>
+    <div class="nav-right"></div>
+</nav>
+
+<div class="menu-overlay" id="menuOverlay">
+    <button class="menu-close" onclick="toggleMenu()">×</button>
+    <a href="index.html" onclick="toggleMenu()">Home</a>
+    <a href="collections.html" onclick="toggleMenu()">Collections</a>
+    <a href="members.html" onclick="toggleMenu()">Members</a>
+    <a href="blog.html" onclick="toggleMenu()">Blog</a>
+    <a href="about.html" onclick="toggleMenu()">About</a>
+    <a href="contact.html" onclick="toggleMenu()">Contact</a>
+    <a href="checkout.html" onclick="toggleMenu()">Bag</a>
+    <div style="width:40px;height:1px;background:rgba(245,234,208,0.12);"></div>
+    <a href="account.html" onclick="toggleMenu()" style="font-size:clamp(14px,2vw,18px);letter-spacing:0.18em;color:rgba(245,234,208,0.5);">My Account</a>
+</div>
+
+<!-- HERO -->
+<section class="members-hero">
+    <div class="hero-inner">
+        <img src="stamp-seal.png" alt="Ficti seal" class="hero-seal">
+        <p class="hero-eyebrow">Ficti Garments</p>
+        <h1 class="hero-title">The Inner<br><em>Circle</em></h1>
+        <p class="hero-sub">Early access to every drop. Members-only pieces. Behind-the-scenes from the studio. This is where Ficti lives.</p>
+
+        <!-- Gate (shown to non-members) -->
+        <div id="member-gate">
+            <p style="font-size:12px;color:rgba(245,234,208,0.4);margin-bottom:40px;letter-spacing:0.06em;">Select your tier below to join. Already a member? <a href="login.html" style="color:rgba(245,234,208,0.7);text-decoration:underline;text-underline-offset:3px;">Sign in</a></p>
+        </div>
+
+        <!-- Member welcome (shown to members) -->
+        <div class="member-content" id="member-welcome">
+            <p class="member-greeting">Welcome back,</p>
+            <p class="member-name" id="member-name-display">—</p>
+            <p class="member-tier">Inner Circle Member</p>
+        </div>
+    </div>
+</section>
+
+<!-- PERKS STRIP (always visible) -->
+<section class="perks-strip">
+    <p class="perks-label">What Membership Includes</p>
+    <div class="perks-grid">
+        <div class="perk">
+            <div class="perk-icon">&#9670;</div>
+            <h3 class="perk-title">Early Access</h3>
+            <p class="perk-text">Shop every new drop 48 hours before it goes public. First in — always.</p>
+        </div>
+        <div class="perk">
+            <div class="perk-icon">&#9670;</div>
+            <h3 class="perk-title">Members-Only Pieces</h3>
+            <p class="perk-text">Exclusive colorways and limited editions made only for Inner Circle members.</p>
+        </div>
+        <div class="perk">
+            <div class="perk-icon">&#9670;</div>
+            <h3 class="perk-title">Studio Access</h3>
+            <p class="perk-text">Behind-the-scenes content, design notes, and direct updates from the Ficti team.</p>
+        </div>
+    </div>
+</section>
+
+<!-- TIERS -->
+<section class="tiers-section" id="tiers-section">
+    <p class="tiers-label">Choose Your Tier</p>
+    <h2 class="tiers-heading">The Inner Circle</h2>
+    <div class="tiers-grid">
+
+        <!-- Tier I — $100 -->
+        <div class="tier-card">
+            <div class="tier-numeral">I</div>
+            <div class="tier-price"><sup>$</sup>100</div>
+            <p class="tier-period">per year</p>
+            <div class="tier-divider"></div>
+            <ul class="tier-perks">
+                <li>Early access to new drops (24 hrs)</li>
+                <li>Members newsletter</li>
+                <li>Ficti digital lookbook each season</li>
+                <li>Exclusive member discount (10%)</li>
+            </ul>
+            <a href="account.html?tier=I" class="tier-btn">Join Tier I</a>
+        </div>
+
+        <!-- Tier II — $300 (featured) -->
+        <div class="tier-card featured">
+            <div class="tier-numeral">II</div>
+            <div class="tier-price"><sup>$</sup>300</div>
+            <p class="tier-period">per year</p>
+            <div class="tier-divider"></div>
+            <ul class="tier-perks">
+                <li>Everything in Tier I</li>
+                <li>Early access to new drops (48 hrs)</li>
+                <li>Members-only colorways &amp; pieces</li>
+                <li>Exclusive member discount (15%)</li>
+                <li>Behind-the-scenes studio content</li>
+            </ul>
+            <a href="account.html?tier=II" class="tier-btn">Join Tier II</a>
+        </div>
+
+        <!-- Tier III — $500 -->
+        <div class="tier-card">
+            <div class="tier-numeral">III</div>
+            <div class="tier-price"><sup>$</sup>500</div>
+            <p class="tier-period">per year</p>
+            <div class="tier-divider"></div>
+            <ul class="tier-perks">
+                <li>Everything in Tier II</li>
+                <li>First access to every drop (72 hrs)</li>
+                <li>Annual members-only piece, gifted</li>
+                <li>Exclusive member discount (20%)</li>
+                <li>Direct line to the Ficti team</li>
+                <li>Name on the Inner Circle wall</li>
+            </ul>
+            <a href="account.html?tier=III" class="tier-btn">Join Tier III</a>
+        </div>
+
+    </div>
+</section>
+
+<!-- MEMBER CONTENT (unlocked) -->
+<div class="member-content" id="member-exclusive-content">
+    <section class="content-section" style="background:var(--charcoal-2);">
+        <p class="section-label">Upcoming Drops — Members Preview</p>
+        <div class="drops-grid">
+            <div class="drop-card">
+                <p class="drop-badge">Early Access</p>
+                <h3 class="drop-title">The Lattice — Season II</h3>
+                <p class="drop-text">The signature pattern returns in two new colourways: ivory lattice on cream, and deep navy on midnight.</p>
+                <p class="drop-date">Dropping — Q1 2025</p>
+            </div>
+            <div class="drop-card">
+                <p class="drop-badge">Members Only</p>
+                <h3 class="drop-title">The Crest Cap</h3>
+                <p class="drop-text">A structured 5-panel with the Ficti wax seal embroidered on the front. 200 units. Members first.</p>
+                <p class="drop-date">Dropping — Q1 2025</p>
+            </div>
+            <div class="drop-card">
+                <p class="drop-badge">Coming Soon</p>
+                <h3 class="drop-title">The Course Jacket</h3>
+                <p class="drop-text">A mid-layer windbreaker built for 18 holes. Quilted lining, diamond lattice lining detail, wax seal zipper pull.</p>
+                <p class="drop-date">Dropping — Q2 2025</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <p class="section-label">From the Studio</p>
+        <div style="max-width:680px;">
+            <h3 style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--cream);margin-bottom:16px;">Season One — A Note from the Founder</h3>
+            <p style="font-size:13px;color:rgba(245,234,208,0.55);line-height:1.9;margin-bottom:20px;">Season One was built around one idea: that golf apparel should feel like it means something. The Lattice, The Seal, The Stripe — each piece is a statement. Not loud. Just unmistakable.</p>
+            <p style="font-size:13px;color:rgba(245,234,208,0.55);line-height:1.9;">Season Two goes deeper. We're expanding the pattern language, adding outerwear, and introducing a cap line. If you're reading this, you'll see it before anyone else.</p>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <div class="footer-bottom">
+        <div class="footer-logo-row">
+            <img src="stamp-seal.png" alt="Ficti seal" class="footer-seal-img">
+            <span class="footer-wordmark">Ficti Garments</span>
+        </div>
+        <p class="footer-copy">&copy; 2025 Ficti Garments. All rights reserved.</p>
+    </div>
+</footer>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const supabase = createClient('https://nusuluxjeckjcdgxzgyf.supabase.co', 'sb_publishable_i8jwxXfkwQKCApZOCFu8SA_JrwICvqK');
+
+window.toggleMenu = function() {
+    var h = document.getElementById('hamburger');
+    var m = document.getElementById('menuOverlay');
+    h.classList.toggle('open');
+    m.classList.toggle('open');
+};
+
+async function init() {
+    var { data: { session } } = await supabase.auth.getSession();
+    if (!session) return; // not logged in — gate stays visible
+
+    var { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+    var tier = profile && profile.membership_tier;
+
+    if (tier) {
+        document.getElementById('member-gate').style.display = 'none';
+        document.getElementById('member-welcome').classList.add('visible');
+        document.getElementById('member-exclusive-content').classList.add('visible');
+        var nameEl = document.getElementById('member-name-display');
+        if (nameEl && profile.first_name) nameEl.textContent = profile.first_name;
+    }
+}
+init();
+</script>
+</body>
+</html>

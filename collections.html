@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="favicon-64.png" sizes="64x64">
+    <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="favicon-180.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collections — Ficti Garments</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --cream: #F5EAD0; --cream-mid: #EDE0C4; --cream-dark: #E3D4B2;
+            --crimson: #8B1818; --crimson-deep: #6B1212;
+            --black: #0D0D0D; --charcoal: #141414; --charcoal-2: #1C1C1C; --mid: #4A4A4A;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--cream); color: var(--black); overflow-x: hidden; }
+
+                /* NAV */
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; background: rgba(13,13,13,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(139,24,24,0.28); }
+        .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 8px; }
+        .hamburger span { display: block; width: 22px; height: 1.5px; background: var(--cream); transition: all 0.3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+        .nav-logo { font-family: 'Cormorant SC', serif; font-size: 17px; font-weight: 500; letter-spacing: 0.22em; color: var(--cream); text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
+        .nav-right { display: flex; align-items: center; }
+        .nav-cart { background: none; border: none; cursor: pointer; color: rgba(245,234,208,0.65); display: flex; align-items: center; gap: 7px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; transition: color 0.2s; padding: 0; }
+        .nav-cart:hover { color: var(--cream); }
+        .cart-badge { background: var(--crimson); color: #fff; border-radius: 50%; width: 17px; height: 17px; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; }
+        /* MENU OVERLAY */
+        .menu-overlay { display: none; position: fixed; inset: 0; background: rgba(13,13,13,0.98); z-index: 190; flex-direction: column; align-items: center; justify-content: center; gap: 44px; }
+        .menu-overlay.open { display: flex; }
+        .menu-overlay a { font-family: 'Cormorant Garamond', serif; font-size: clamp(38px, 6vw, 58px); font-weight: 300; color: var(--cream); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
+        .menu-overlay a:hover { color: var(--crimson); }
+        .menu-close { position: absolute; top: 22px; right: 28px; background: none; border: none; color: rgba(245,234,208,0.45); cursor: pointer; font-size: 30px; line-height: 1; transition: color 0.2s; padding: 0; }
+        .menu-close:hover { color: var(--cream); }
+
+        /* BTN */
+        .btn { display: inline-block; padding: 15px 48px; border: 1px solid var(--crimson); color: var(--cream); font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; text-decoration: none; position: relative; overflow: hidden; transition: color 0.3s; cursor: pointer; background: transparent; }
+        .btn::before { content: ''; position: absolute; inset: 0; background: var(--crimson); transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; z-index: -1; }
+        .btn:hover::before { transform: scaleX(1); }
+        .btn-dark { border-color: var(--crimson); color: var(--black); }
+        .btn-dark::before { background: var(--crimson); }
+        .btn-dark:hover { color: var(--cream); }
+
+        /* TICKER */
+        .ticker { background: var(--crimson); padding: 13px 0; overflow: hidden; white-space: nowrap; user-select: none; }
+        .ticker-track { display: inline-flex; animation: tick 22s linear infinite; }
+        .ticker-item { font-family: 'Cormorant SC', serif; font-size: 13px; letter-spacing: 0.2em; color: var(--cream); padding: 0 36px; }
+        .ticker-dot { color: rgba(245,234,208,0.4); font-size: 10px; align-self: center; }
+        @keyframes tick { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        .label { font-size: 10px; font-weight: 600; letter-spacing: 0.42em; text-transform: uppercase; color: var(--crimson); }
+        .divider-line { width: 36px; height: 1px; background: var(--crimson); margin: 16px auto 0; }
+
+        /* PAGE HEADER (inner pages) */
+        .page-hero { padding: 160px 60px 80px; background: var(--charcoal); position: relative; overflow: hidden; }
+        .page-hero::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(45deg, rgba(139,24,24,0.07) 1px, transparent 1px), linear-gradient(-45deg, rgba(139,24,24,0.07) 1px, transparent 1px); background-size: 56px 56px; }
+        .page-hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%, transparent 50%, rgba(13,13,13,0.6) 100%); pointer-events: none; }
+        .page-hero-inner { position: relative; z-index: 2; max-width: 900px; }
+        .page-eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 0.45em; text-transform: uppercase; color: var(--crimson); margin-bottom: 20px; }
+        .page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(56px, 9vw, 110px); font-weight: 300; line-height: 0.9; color: var(--cream); }
+        .page-title em { font-style: italic; color: var(--crimson); }
+
+        /* FOOTER */
+        footer { background: var(--black); padding: 64px 60px 36px; }
+        .footer-top { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 36px; }
+        .footer-brand-block { display: flex; flex-direction: column; gap: 12px; }
+        .footer-logo-row { display: flex; align-items: center; gap: 14px; }
+        .footer-seal-img { width: 40px; height: 40px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(139,24,24,0.3)); }
+        .mobile-menu-seal { width: 64px; height: 64px; object-fit: contain; margin-bottom: 20px; opacity: 0.85; }
+        .footer-wordmark { font-family: 'Cormorant SC', serif; font-size: 20px; font-weight: 500; letter-spacing: 0.22em; color: var(--cream); }
+        .footer-tagline-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 14px; color: rgba(245,234,208,0.35); }
+        .footer-cols { display: flex; gap: 64px; }
+        .footer-col h4 { font-size: 9px; font-weight: 600; letter-spacing: 0.35em; text-transform: uppercase; color: var(--crimson); margin-bottom: 20px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+        .footer-col a { font-size: 13px; font-weight: 300; color: rgba(245,234,208,0.42); text-decoration: none; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--cream); }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .footer-copy { font-size: 11px; color: rgba(255,255,255,0.18); }
+        .footer-social { display: flex; gap: 24px; }
+        .footer-social a { font-size: 10px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(245,234,208,0.35); text-decoration: none; transition: color 0.2s; }
+        .footer-social a:hover { color: var(--cream); }
+
+        @media (max-width: 900px) {
+            nav { padding: 0 24px; }
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .page-hero { padding: 130px 24px 60px; }
+            footer { padding: 48px 24px 28px; }
+            .footer-top { flex-direction: column; gap: 44px; }
+            .footer-cols { flex-wrap: wrap; gap: 40px; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+        }
+</style>
+</head>
+<body>
+<nav id="main-nav">
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="nav-logo">Ficti Garments</a>
+    <div class="nav-right"></div>
+</nav>
+<div class="menu-overlay" id="menuOverlay">
+    <button class="menu-close" onclick="toggleMenu()">×</button>
+    <a href="index.html" onclick="toggleMenu()">Home</a>
+    <a href="collections.html" onclick="toggleMenu()">Collections</a>
+        <a href="members.html" onclick="toggleMenu()">Members</a>
+    <a href="blog.html" onclick="toggleMenu()">Blog</a>
+    <a href="about.html" onclick="toggleMenu()">About</a>
+    <a href="contact.html" onclick="toggleMenu()">Contact</a>
+    <a href="checkout.html" onclick="toggleMenu()">Bag</a>
+        <div style="width:40px;height:1px;background:rgba(245,234,208,0.12);"></div>
+        <a href="account.html" onclick="toggleMenu()" style="font-size:clamp(14px,2vw,18px);letter-spacing:0.18em;color:rgba(245,234,208,0.5);">My Account</a>
+</div>
+<div class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-eyebrow">Season One</p>
+        <h1 class="page-title">The<br><em>Collection</em></h1>
+    </div>
+</div>
+<div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+        <span class="ticker-item">New Collection</span><span class="ticker-item ticker-dot">&#9670;</span>
+        <span class="ticker-item">Make Your Stamp</span><span class="ticker-item ticker-dot">&#9670;</span>
+        <span class="ticker-item">The Ficti Standard</span><span class="ticker-item ticker-dot">&#9670;</span>
+        <span class="ticker-item">Season One</span><span class="ticker-item ticker-dot">&#9670;</span>
+        <span class="ticker-item">New Collection</span><span class="ticker-item ticker-dot">&#9670;</span>
+        <span class="ticker-item">Make Your Stamp</span><span class="ticker-item ticker-dot">&#9670;</span>
+        <span class="ticker-item">The Ficti Standard</span><span class="ticker-item ticker-dot">&#9670;</span>
+        <span class="ticker-item">Season One</span><span class="ticker-item ticker-dot">&#9670;</span>
+    </div>
+</div>
+<section style="padding:100px 60px;background:var(--cream-mid);">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1200px;margin:0 auto;">
+        
+        <!-- The Lattice carousel card -->
+        <div style="background:#0D0D0D;overflow:hidden;cursor:pointer;" id="lattice-card" onclick="lcOpenModal(lcIdx)">
+            <div style="aspect-ratio:3/4;position:relative;overflow:hidden;background:#0D0D0D;" id="lattice-carousel">
+                <div id="lattice-track" style="display:flex;width:400%;height:100%;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform;">
+                    <img src="lattice-all.png"   alt="The Lattice — all angles" style="width:25%;height:100%;object-fit:cover;flex-shrink:0;display:block;">
+                    <img src="lattice-front.png" alt="The Lattice — front"      style="width:25%;height:100%;object-fit:cover;flex-shrink:0;display:block;">
+                    <img src="lattice-side.png"  alt="The Lattice — side"       style="width:25%;height:100%;object-fit:cover;flex-shrink:0;display:block;">
+                    <img src="lattice-back.png"  alt="The Lattice — back"       style="width:25%;height:100%;object-fit:cover;flex-shrink:0;display:block;">
+                </div>
+                <!-- prev / next arrows -->
+                <button onclick="event.stopPropagation();lcSlide(-1)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(13,13,13,.6);border:1px solid rgba(245,234,208,.18);color:var(--cream);width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;transition:background .2s;" onmouseenter="this.style.background='rgba(139,24,24,.75)'" onmouseleave="this.style.background='rgba(13,13,13,.6)'">&#8249;</button>
+                <button onclick="event.stopPropagation();lcSlide(1)"  style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(13,13,13,.6);border:1px solid rgba(245,234,208,.18);color:var(--cream);width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;transition:background .2s;" onmouseenter="this.style.background='rgba(139,24,24,.75)'" onmouseleave="this.style.background='rgba(13,13,13,.6)'">&#8250;</button>
+                <!-- dot indicators -->
+                <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:5;" id="lattice-dots">
+                    <span onclick="event.stopPropagation();lcGo(0)" style="width:6px;height:6px;border-radius:50%;background:var(--cream);opacity:1;cursor:pointer;transition:opacity .2s;"></span>
+                    <span onclick="event.stopPropagation();lcGo(1)" style="width:6px;height:6px;border-radius:50%;background:var(--cream);opacity:.35;cursor:pointer;transition:opacity .2s;"></span>
+                    <span onclick="event.stopPropagation();lcGo(2)" style="width:6px;height:6px;border-radius:50%;background:var(--cream);opacity:.35;cursor:pointer;transition:opacity .2s;"></span>
+                    <span onclick="event.stopPropagation();lcGo(3)" style="width:6px;height:6px;border-radius:50%;background:var(--cream);opacity:.35;cursor:pointer;transition:opacity .2s;"></span>
+                </div>
+                <div style="position:absolute;top:16px;right:16px;"><img src="stamp-seal.png" alt="Ficti seal" style="width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.35));"></div>
+            </div>
+            <div style="padding:20px 24px 26px;">
+                <p style="font-size:9px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--crimson);margin-bottom:7px;">Polo — The Signature</p>
+                <h3 style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--cream);margin-bottom:8px;">The Lattice</h3>
+                <p style="font-size:12px;color:rgba(245,234,208,.55);line-height:1.7;margin-bottom:16px;">Our defining piece. A diamond lattice pattern with wax seal motifs — bold, unmistakable, and entirely Ficti.</p>
+                <p style="font-size:12px;letter-spacing:.08em;color:rgba(245,234,208,.4);">Coming Soon</p>
+            </div>
+        </div>
+
+        <!-- Lattice lightbox modal -->
+        <div id="lattice-modal" onclick="lcCloseModal()" style="display:none;position:fixed;inset:0;background:rgba(13,13,13,.92);z-index:1000;align-items:center;justify-content:center;padding:24px;">
+            <div onclick="event.stopPropagation()" style="position:relative;max-width:860px;width:100%;background:#0D0D0D;border:1px solid rgba(245,234,208,.12);display:flex;flex-wrap:wrap;">
+                <!-- close -->
+                <button onclick="lcCloseModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--cream);font-size:26px;cursor:pointer;z-index:10;opacity:.6;line-height:1;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='.6'">&times;</button>
+                <!-- large image -->
+                <div style="flex:1;min-width:260px;position:relative;overflow:hidden;aspect-ratio:3/4;">
+                    <div id="modal-track" style="display:flex;width:400%;height:100%;transition:transform .5s cubic-bezier(.4,0,.2,1);">
+                        <img src="lattice-all.png"   style="width:25%;height:100%;object-fit:cover;flex-shrink:0;">
+                        <img src="lattice-front.png" style="width:25%;height:100%;object-fit:cover;flex-shrink:0;">
+                        <img src="lattice-side.png"  style="width:25%;height:100%;object-fit:cover;flex-shrink:0;">
+                        <img src="lattice-back.png"  style="width:25%;height:100%;object-fit:cover;flex-shrink:0;">
+                    </div>
+                    <button onclick="lcModalSlide(-1)" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:rgba(13,13,13,.6);border:1px solid rgba(245,234,208,.18);color:var(--cream);width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;" onmouseenter="this.style.background='rgba(139,24,24,.85)'" onmouseleave="this.style.background='rgba(13,13,13,.6)'">&#8249;</button>
+                    <button onclick="lcModalSlide(1)"  style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(13,13,13,.6);border:1px solid rgba(245,234,208,.18);color:var(--cream);width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;" onmouseenter="this.style.background='rgba(139,24,24,.85)'" onmouseleave="this.style.background='rgba(13,13,13,.6)'">&#8250;</button>
+                </div>
+                <!-- product info panel -->
+                <div style="width:280px;padding:40px 32px;display:flex;flex-direction:column;justify-content:center;flex-shrink:0;">
+                    <img src="stamp-seal.png" alt="Ficti seal" style="width:52px;height:52px;object-fit:contain;filter:drop-shadow(0 2px 12px rgba(139,24,24,.5));margin-bottom:28px;">
+                    <p style="font-size:9px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--crimson);margin-bottom:10px;">Polo — The Signature</p>
+                    <h2 style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:400;color:var(--cream);margin-bottom:16px;line-height:1.1;">The Lattice</h2>
+                    <p style="font-size:13px;color:rgba(245,234,208,.6);line-height:1.8;margin-bottom:28px;">Our defining piece. A diamond lattice pattern with wax seal motifs — bold, unmistakable, and entirely Ficti. Crafted from performance-blend fabric for the course and beyond.</p>
+                    <!-- thumb strip -->
+                    <div style="display:flex;gap:8px;margin-bottom:32px;">
+                        <img src="lattice-all.png"   onclick="lcModalGo(0)" id="mthumb0" style="width:54px;height:54px;object-fit:cover;cursor:pointer;border:2px solid var(--crimson);opacity:1;transition:opacity .2s,border-color .2s;">
+                        <img src="lattice-front.png" onclick="lcModalGo(1)" id="mthumb1" style="width:54px;height:54px;object-fit:cover;cursor:pointer;border:2px solid transparent;opacity:.45;transition:opacity .2s,border-color .2s;">
+                        <img src="lattice-side.png"  onclick="lcModalGo(2)" id="mthumb2" style="width:54px;height:54px;object-fit:cover;cursor:pointer;border:2px solid transparent;opacity:.45;transition:opacity .2s,border-color .2s;">
+                        <img src="lattice-back.png"  onclick="lcModalGo(3)" id="mthumb3" style="width:54px;height:54px;object-fit:cover;cursor:pointer;border:2px solid transparent;opacity:.45;transition:opacity .2s,border-color .2s;">
+                    </div>
+                    <p style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,234,208,.35);border-top:1px solid rgba(245,234,208,.1);padding-top:20px;">Available Soon</p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        var lcIdx = 0;
+        var lcMIdx = 0;
+        function lcGo(n) {
+            lcIdx = n;
+            document.getElementById('lattice-track').style.transform = 'translateX(-' + (25 * n) + '%)';
+            var dots = document.getElementById('lattice-dots').children;
+            for (var i = 0; i < dots.length; i++) dots[i].style.opacity = i === n ? '1' : '.35';
+        }
+        function lcSlide(dir) { lcGo((lcIdx + dir + 4) % 4); }
+        function lcOpenModal(startIdx) {
+            lcMIdx = startIdx || 0;
+            document.getElementById('modal-track').style.transform = 'translateX(-' + (25 * lcMIdx) + '%)';
+            lcUpdateThumbs();
+            var m = document.getElementById('lattice-modal');
+            m.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function lcCloseModal() {
+            document.getElementById('lattice-modal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        function lcModalGo(n) {
+            lcMIdx = n;
+            document.getElementById('modal-track').style.transform = 'translateX(-' + (25 * n) + '%)';
+            lcUpdateThumbs();
+        }
+        function lcModalSlide(dir) { lcModalGo((lcMIdx + dir + 4) % 4); }
+        function lcUpdateThumbs() {
+            for (var i = 0; i < 4; i++) {
+                var t = document.getElementById('mthumb' + i);
+                if (t) {
+                    t.style.borderColor = i === lcMIdx ? 'var(--crimson)' : 'transparent';
+                    t.style.opacity = i === lcMIdx ? '1' : '.45';
+                }
+            }
+        }
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') lcCloseModal(); });
+        </script>
+        
+        <div style="background:var(--cream);overflow:hidden;cursor:pointer;" onmouseenter="this.querySelector('svg').style.transform='scale(1.04)'" onmouseleave="this.querySelector('svg').style.transform='scale(1)'">
+            <div style="aspect-ratio:3/4;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+                <svg viewBox="0 0 220 280" xmlns="http://www.w3.org/2000/svg" style="width:68%;transition:transform .5s ease;">
+                    <path d="M70 60 Q110 44 150 60 L168 120 L158 270 L62 270 L52 120 Z" fill="#F5EAD0"/>
+                    <path d="M70 60 L38 130 L58 118 Z" fill="#F5EAD0"/>
+                    <path d="M150 60 L182 130 L162 118 Z" fill="#F5EAD0"/>
+                    <path d="M90 60 Q110 48 130 60 L122 78 Q110 68 98 78 Z" fill="#1A1A1A"/>
+                    
+                    
+    <path d="M98 78 Q110 70 122 78 L118 88 Q110 80 102 88 Z" fill="#F5EAD0"/>
+    <circle cx="110" cy="84" r="4.5" fill="#8B1818"/>
+    <circle cx="110" cy="97" r="4.5" fill="#8B1818"/>
+    <circle cx="110" cy="110" r="4.5" fill="#8B1818"/>
+    <rect x="158" y="105" width="22" height="12" rx="2" fill="#8B1818" opacity="0.9"/>
+                </svg>
+                <div style="position:absolute;top:16px;right:16px;"><img src="stamp-seal.png" alt="Ficti seal" style="width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.35));"></div>
+            </div>
+            <div style="padding:20px 24px 26px;">
+                <p style="font-size:9px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--crimson);margin-bottom:7px;">Polo — Classic</p>
+                <h3 style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;margin-bottom:8px;">The Seal</h3>
+                <p style="font-size:12px;color:var(--mid);line-height:1.7;margin-bottom:16px;">Clean lines, crimson buttons, and a contrast cuff. The everyday Ficti polo — understated until you look closely.</p>
+                <p style="font-size:12px;letter-spacing:.08em;color:var(--mid);">Coming Soon</p>
+            </div>
+        </div>
+        
+        <div style="background:var(--cream);overflow:hidden;cursor:pointer;" onmouseenter="this.querySelector('svg').style.transform='scale(1.04)'" onmouseleave="this.querySelector('svg').style.transform='scale(1)'">
+            <div style="aspect-ratio:3/4;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+                <svg viewBox="0 0 220 280" xmlns="http://www.w3.org/2000/svg" style="width:68%;transition:transform .5s ease;">
+                    <path d="M70 60 Q110 44 150 60 L168 120 L158 270 L62 270 L52 120 Z" fill="#F8F2E6"/>
+                    <path d="M70 60 L38 130 L58 118 Z" fill="#F8F2E6"/>
+                    <path d="M150 60 L182 130 L162 118 Z" fill="#F8F2E6"/>
+                    <path d="M90 60 Q110 48 130 60 L122 78 Q110 68 98 78 Z" fill="#1A1A1A"/>
+                    
+    <line x1="76" y1="62" x2="68" y2="268" stroke="rgba(0,0,0,0.13)" stroke-width="1"/>
+    <line x1="88" y1="58" x2="81" y2="269" stroke="rgba(0,0,0,0.13)" stroke-width="1"/>
+    <line x1="100" y1="56" x2="95" y2="270" stroke="rgba(0,0,0,0.13)" stroke-width="1"/>
+    <line x1="110" y1="55" x2="110" y2="270" stroke="rgba(0,0,0,0.13)" stroke-width="1"/>
+    <line x1="120" y1="56" x2="125" y2="270" stroke="rgba(0,0,0,0.13)" stroke-width="1"/>
+    <line x1="132" y1="58" x2="139" y2="269" stroke="rgba(0,0,0,0.13)" stroke-width="1"/>
+    <circle cx="110" cy="84" r="3.5" fill="rgba(0,0,0,0.5)"/>
+    <circle cx="110" cy="95" r="3.5" fill="rgba(0,0,0,0.5)"/>
+                    
+                </svg>
+                <div style="position:absolute;top:16px;right:16px;"><img src="stamp-seal.png" alt="Ficti seal" style="width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.35));"></div>
+            </div>
+            <div style="padding:20px 24px 26px;">
+                <p style="font-size:9px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--crimson);margin-bottom:7px;">Polo — Statement</p>
+                <h3 style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;margin-bottom:8px;">The Stripe</h3>
+                <p style="font-size:12px;color:var(--mid);line-height:1.7;margin-bottom:16px;">Fine pinstripes on a cream base with the Ficti seal on the chest. A nod to the cricket whites of the English club.</p>
+                <p style="font-size:12px;letter-spacing:.08em;color:var(--mid);">Coming Soon</p>
+            </div>
+        </div>
+    </div>
+</section>
+<section style="padding:80px 60px;background:var(--cream);text-align:center;border-top:1px solid rgba(139,24,24,.12);">
+    <p class="label" style="margin-bottom:20px;">Be the First</p>
+    <div class="divider-line"></div>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,60px);font-weight:300;margin:28px 0 12px;">Launching Soon</h2>
+    <p style="font-size:13px;color:var(--mid);font-weight:300;margin-bottom:40px;">Join the waitlist for early access and launch pricing.</p>
+    <a href="contact.html" class="btn btn-dark">Join the Waitlist</a>
+</section>
+
+<footer>
+    <div class="footer-top">
+        <div class="footer-brand-block">
+            <div class="footer-logo-row">
+                <img class="footer-seal-img" src="stamp-seal.png" alt="Ficti seal">
+                <span class="footer-wordmark">Ficti Garments</span>
+            </div>
+            <div class="footer-tagline-text">Make Your Stamp.</div>
+        </div>
+        <div class="footer-cols">
+            <div class="footer-col"><h4>Shop</h4><ul>
+                <li><a href="collections.html">Collections</a></li>
+                <li><a href="collections.html">Polos</a></li>
+                <li><a href="collections.html">View All</a></li>
+            </ul></div>
+            <div class="footer-col"><h4>Brand</h4><ul>
+                <li><a href="about.html">Our Story</a></li>
+                <li><a href="about.html">The Standard</a></li>
+            </ul></div>
+            <div class="footer-col"><h4>Info</h4><ul>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="contact.html">Stockists</a></li>
+            </ul></div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p class="footer-copy">&copy; 2024 Ficti Garments. All rights reserved.</p>
+        <div class="footer-social">
+            <a href="#">Instagram</a><a href="#">TikTok</a><a href="#">X</a>
+        </div>
+    </div>
+</footer>
+<script>
+function toggleMenu() {
+    var h = document.getElementById('hamburger');
+    var m = document.getElementById('menuOverlay');
+    h.classList.toggle('open');
+    m.classList.toggle('open');
+    document.body.style.overflow = m.classList.contains('open') ? 'hidden' : '';
+}
+window.addEventListener('scroll', function() {
+    document.getElementById('main-nav').style.borderBottomColor = window.scrollY > 80 ? 'rgba(139,24,24,.45)' : 'rgba(139,24,24,.25)';
+});
+</script>
+<!-- Voiceflow Chat Widget -->
+<script type="text/javascript">
+  (function(d,t){
+    var v=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    v.onload=function(){
+      window.voiceflow.chat.load({
+        verify:{projectID:'6a34a5b3677246c35414152a'},
+        url:'https://general-runtime.voiceflow.com',
+        versionID:'main'
+      });
+      // Hide Voiceflow's own launcher button using their API
+      var tries=0;
+      var iv=setInterval(function(){
+        if(window.voiceflow&&window.voiceflow.chat&&window.voiceflow.chat.hide){
+          window.voiceflow.chat.hide();
+          clearInterval(iv);
+        }
+        if(++tries>20) clearInterval(iv);
+      },200);
+    };
+    v.src="https://cdn.voiceflow.com/widget/bundle.mjs";
+    v.type="text/javascript";
+    s.parentNode.insertBefore(v,s);
+  })(document,'script');
+</script>
+
+<style>
+  #ficti-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    z-index: 2147483647;
+    transition: transform 0.18s ease;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+  #ficti-btn:hover { transform: scale(1.08); }
+  #ficti-btn:active { transform: scale(0.94); }
+  #ficti-btn img { width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; }
+</style>
+<button id="ficti-btn" aria-label="Open chat">
+  <img src="stamp-seal.png" alt="Ficti">
+</button>
+<script>
+  var _open=false;
+  document.getElementById('ficti-btn').addEventListener('click',function(){
+    if(!window.voiceflow||!window.voiceflow.chat) return;
+    _open=!_open;
+    if(_open){ window.voiceflow.chat.show(); window.voiceflow.chat.open(); }
+    else{ window.voiceflow.chat.close(); window.voiceflow.chat.hide(); }
+  });
+</script>
+
+<style>
+  #ficti-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: #F5EAD0;
+    border: none;
+    cursor: pointer;
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    transition: transform 0.18s ease;
+    padding: 0;
+  }
+  #ficti-btn:hover { transform: scale(1.1); }
+  #ficti-btn:active { transform: scale(0.95); }
+  #ficti-btn img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+  }
+</style>
+<button id="ficti-btn" aria-label="Open chat">
+  <img src="stamp-seal.png" alt="Ficti">
+</button>
+<script>
+  var _open = false;
+  document.getElementById('ficti-btn').addEventListener('click', function() {
+    if (!window.voiceflow || !window.voiceflow.chat) return;
+    _open = !_open;
+    if (_open) window.voiceflow.chat.open();
+    else window.voiceflow.chat.close();
+  });
+</script>
+
+
+</body></html>

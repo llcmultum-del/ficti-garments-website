@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="favicon-64.png" sizes="64x64">
+    <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="favicon-180.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog & Newsletter — Ficti Garments</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+SC:wght@300;400;500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --cream: #F5EAD0; --cream-mid: #EDE0C4; --cream-dark: #D8CAA8;
+            --crimson: #8B1818; --crimson-deep: #6B1212;
+            --black: #0D0D0D; --charcoal: #141414; --mid: #6B6B6B;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--black); color: var(--cream); }
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; background: rgba(13,13,13,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(139,24,24,0.2); }
+        .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 8px; }
+        .hamburger span { display: block; width: 20px; height: 1px; background: rgba(245,234,208,0.7); transition: all 0.3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+        .nav-logo { font-family: 'Cormorant SC', serif; font-size: 15px; font-weight: 400; letter-spacing: 0.28em; color: var(--cream); text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
+        .nav-right { min-width: 80px; }
+        .menu-overlay { display: none; position: fixed; inset: 0; background: rgba(13,13,13,0.98); z-index: 190; flex-direction: column; align-items: center; justify-content: center; gap: 36px; }
+        .menu-overlay.open { display: flex; }
+        .menu-overlay a { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 5vw, 50px); font-weight: 300; color: var(--cream); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
+        .menu-overlay a:hover { color: var(--crimson); }
+        .menu-overlay .menu-divider { width: 40px; height: 1px; background: rgba(245,234,208,0.12); }
+        .menu-overlay .menu-account { font-size: clamp(14px, 2vw, 18px); letter-spacing: 0.18em; color: rgba(245,234,208,0.5); }
+        .menu-overlay .menu-account:hover { color: var(--cream); }
+        .menu-close { position: absolute; top: 22px; right: 28px; background: none; border: none; color: rgba(245,234,208,0.4); cursor: pointer; font-size: 28px; line-height: 1; padding: 0; transition: color 0.2s; }
+        .menu-close:hover { color: var(--cream); }
+        .blog-hero { padding: 140px 64px 80px; text-align: center; border-bottom: 1px solid rgba(245,234,208,0.07); }
+        .hero-kicker { font-size: 9px; font-weight: 600; letter-spacing: 0.32em; text-transform: uppercase; color: var(--crimson); margin-bottom: 20px; }
+        .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px, 7vw, 88px); font-weight: 300; color: var(--cream); letter-spacing: 0.02em; line-height: 1.05; margin-bottom: 24px; }
+        .hero-sub { font-size: 11px; color: rgba(245,234,208,0.4); letter-spacing: 0.1em; line-height: 1.9; max-width: 440px; margin: 0 auto; }
+        .section-nav { display: flex; justify-content: center; border-bottom: 1px solid rgba(245,234,208,0.07); }
+        .sec-btn { padding: 24px 48px; background: none; border: none; font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(245,234,208,0.35); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.25s; }
+        .sec-btn.active { color: var(--cream); border-bottom-color: var(--crimson); }
+        #sectionBlog { padding: 80px 64px 120px; }
+        .featured-post { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 80px; border: 1px solid rgba(245,234,208,0.08); }
+        .featured-img { background: var(--charcoal); aspect-ratio: 4/3; position: relative; overflow: hidden; }
+        .featured-img svg { width: 100%; height: 100%; }
+        .featured-meta { padding: 56px 52px; display: flex; flex-direction: column; justify-content: center; }
+        .post-tag { font-size: 8px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: var(--crimson); margin-bottom: 16px; }
+        .post-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 3vw, 42px); font-weight: 300; color: var(--cream); letter-spacing: 0.02em; line-height: 1.2; margin-bottom: 20px; }
+        .post-excerpt { font-size: 11px; color: rgba(245,234,208,0.45); line-height: 1.85; margin-bottom: 32px; }
+        .post-byline { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; }
+        .byline-text { font-size: 9px; letter-spacing: 0.1em; color: rgba(245,234,208,0.3); }
+        .byline-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(245,234,208,0.2); }
+        .btn-read { display: inline-flex; align-items: center; gap: 10px; font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cream); text-decoration: none; padding-bottom: 6px; border-bottom: 1px solid rgba(245,234,208,0.3); transition: border-color 0.2s; }
+        .btn-read:hover { border-bottom-color: var(--crimson); }
+        .btn-read::after { content: '→'; font-size: 12px; }
+        .posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+        .post-card { cursor: pointer; }
+        .card-img { background: var(--charcoal); aspect-ratio: 3/2; margin-bottom: 24px; }
+        .card-img svg { width: 100%; height: 100%; }
+        .card-tag { font-size: 8px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--crimson); margin-bottom: 10px; }
+        .card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--cream); line-height: 1.25; margin-bottom: 12px; }
+        .card-excerpt { font-size: 10px; color: rgba(245,234,208,0.4); line-height: 1.8; margin-bottom: 16px; }
+        .card-date { font-size: 8px; letter-spacing: 0.12em; color: rgba(245,234,208,0.25); }
+        #sectionNewsletter { display: none; }
+        .newsletter-hero { padding: 80px 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        .nl-kicker { font-size: 9px; font-weight: 600; letter-spacing: 0.32em; text-transform: uppercase; color: var(--crimson); margin-bottom: 18px; }
+        .nl-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 4vw, 52px); font-weight: 300; color: var(--cream); line-height: 1.15; margin-bottom: 24px; }
+        .nl-body { font-size: 11px; color: rgba(245,234,208,0.45); line-height: 1.9; }
+        .nl-form-wrap { background: var(--charcoal); padding: 52px 48px; border: 1px solid rgba(245,234,208,0.07); }
+        .nl-field { margin-bottom: 20px; }
+        .nl-field label { display: block; font-size: 8px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,234,208,0.4); margin-bottom: 8px; }
+        .nl-field input { display: block; width: 100%; height: 48px; background: transparent; border: none; border-bottom: 1px solid rgba(245,234,208,0.15); padding: 0 4px; font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--cream); outline: none; transition: border-color 0.2s; }
+        .nl-field input::placeholder { color: rgba(245,234,208,0.2); }
+        .nl-field input:focus { border-bottom-color: rgba(245,234,208,0.5); }
+        .int-options { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+        .int-label { font-size: 8px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,234,208,0.4); }
+        .int-chip { padding: 7px 16px; border: 1px solid rgba(245,234,208,0.15); background: transparent; font-family: 'Montserrat', sans-serif; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(245,234,208,0.4); cursor: pointer; transition: all 0.2s; }
+        .int-chip.selected { border-color: var(--crimson); color: var(--cream); background: rgba(139,24,24,0.1); }
+        .nl-btn { display: block; width: 100%; height: 50px; background: var(--cream); border: none; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--black); cursor: pointer; transition: background 0.2s; margin: 20px 0 12px; }
+        .nl-btn:hover { background: var(--cream-mid); }
+        .nl-disclaimer { font-size: 9px; color: rgba(245,234,208,0.2); letter-spacing: 0.06em; text-align: center; }
+        .nl-error { font-size: 10px; color: var(--crimson); min-height: 16px; letter-spacing: 0.06em; margin-bottom: 4px; }
+        .nl-success { display: none; text-align: center; padding: 48px 0; }
+        .nl-success-icon { font-size: 28px; margin-bottom: 20px; color: var(--crimson); }
+        .nl-success h3 { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: var(--cream); margin-bottom: 12px; }
+        .nl-success p { font-size: 10px; color: rgba(245,234,208,0.4); letter-spacing: 0.08em; line-height: 1.9; }
+        .past-issues { padding: 0 64px 120px; }
+        .past-kicker { font-size: 9px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(245,234,208,0.3); margin-bottom: 32px; }
+        .issues-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+        .issue-card { background: var(--charcoal); padding: 32px 28px; border: 1px solid rgba(245,234,208,0.04); }
+        .issue-num { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; color: rgba(245,234,208,0.07); line-height: 1; margin-bottom: 16px; }
+        .issue-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--cream); margin-bottom: 8px; }
+        .issue-date { font-size: 8px; letter-spacing: 0.14em; color: rgba(245,234,208,0.25); margin-bottom: 10px; }
+        .issue-preview { font-size: 10px; color: rgba(245,234,208,0.35); line-height: 1.7; }
+        @media (max-width: 900px) {
+            .featured-post, .newsletter-hero { grid-template-columns: 1fr; }
+            .posts-grid { grid-template-columns: 1fr 1fr; }
+            .issues-list { grid-template-columns: 1fr; }
+            #sectionBlog, .newsletter-hero, .past-issues { padding-left: 28px; padding-right: 28px; }
+            .blog-hero { padding: 120px 28px 60px; }
+        }
+        @media (max-width: 600px) { .posts-grid { grid-template-columns: 1fr; } .sec-btn { padding: 20px 24px; } }
+    </style>
+</head>
+<body>
+<nav id="main-nav">
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    <a href="index.html" class="nav-logo">Ficti Garments</a>
+    <div class="nav-right"></div>
+</nav>
+<div class="menu-overlay" id="menuOverlay">
+    <button class="menu-close" onclick="toggleMenu()">×</button>
+    <a href="index.html" onclick="toggleMenu()">Home</a>
+    <a href="collections.html" onclick="toggleMenu()">Collections</a>
+    <a href="members.html" onclick="toggleMenu()">Members</a>
+    <a href="blog.html" onclick="toggleMenu()">Blog</a>
+    <a href="about.html" onclick="toggleMenu()">About</a>
+    <a href="contact.html" onclick="toggleMenu()">Contact</a>
+    <div class="menu-divider"></div>
+    <a href="account.html" class="menu-account" onclick="toggleMenu()">My Account</a>
+</div>
+
+<div class="blog-hero">
+    <p class="hero-kicker">Journal &amp; Community</p>
+    <h1 class="hero-title">The Ficti Edit</h1>
+    <p class="hero-sub">Stories from the course, conversations with players, and the thinking behind every stitch.</p>
+</div>
+
+<div class="section-nav">
+    <button class="sec-btn active" id="btnBlog" onclick="showSection('blog')">Blog</button>
+    <button class="sec-btn" id="btnNewsletter" onclick="showSection('newsletter')">Newsletter</button>
+</div>
+
+<div id="sectionBlog">
+    <div class="featured-post">
+        <div class="featured-img">
+            <svg viewBox="0 0 600 450" xmlns="http://www.w3.org/2000/svg">
+                <rect width="600" height="450" fill="#1A1A1A"/>
+                <circle cx="300" cy="200" r="100" fill="none" stroke="rgba(245,234,208,0.05)" stroke-width="1"/>
+                <circle cx="300" cy="200" r="65" fill="none" stroke="rgba(245,234,208,0.04)" stroke-width="1"/>
+                <text x="300" y="212" text-anchor="middle" font-family="serif" font-size="28" fill="rgba(245,234,208,0.07)" letter-spacing="4">FG</text>
+                <rect x="60" y="370" width="480" height="1" fill="rgba(139,24,24,0.2)"/>
+                <text x="300" y="404" text-anchor="middle" font-family="sans-serif" font-size="9" fill="rgba(245,234,208,0.12)" letter-spacing="3">FICTI GARMENTS</text>
+            </svg>
+        </div>
+        <div class="featured-meta">
+            <p class="post-tag">Featured — Course Culture</p>
+            <h2 class="post-title">Why the Best Rounds Are Played in Silence</h2>
+            <p class="post-excerpt">There's a rhythm to a round played without music, without phones, without the constant pull of notification. We spoke with four scratch golfers about what they've found in the quiet, and what it's changed about how they dress for the game.</p>
+            <div class="post-byline">
+                <span class="byline-text">Marcus Webb</span>
+                <span class="byline-dot"></span>
+                <span class="byline-text">July 14, 2026</span>
+                <span class="byline-dot"></span>
+                <span class="byline-text">8 min read</span>
+            </div>
+            <a href="#" class="btn-read">Read the Story</a>
+        </div>
+    </div>
+    <div class="posts-grid">
+        <div class="post-card">
+            <div class="card-img"><svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg"><rect width="480" height="320" fill="#181818"/><text x="240" y="175" text-anchor="middle" font-family="serif" font-size="20" fill="rgba(245,234,208,0.05)" letter-spacing="3">01</text><circle cx="240" cy="140" r="50" fill="none" stroke="rgba(139,24,24,0.12)" stroke-width="1"/></svg></div>
+            <p class="card-tag">Design &amp; Craft</p>
+            <h3 class="card-title">The Fabric That Started Everything</h3>
+            <p class="card-excerpt">How a chance encounter with a Portuguese mill led to the performance twill at the heart of our Tournament collection.</p>
+            <p class="card-date">June 28, 2026</p>
+        </div>
+        <div class="post-card">
+            <div class="card-img"><svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg"><rect width="480" height="320" fill="#161616"/><text x="240" y="175" text-anchor="middle" font-family="serif" font-size="20" fill="rgba(245,234,208,0.05)" letter-spacing="3">02</text><rect x="180" y="90" width="120" height="100" fill="none" stroke="rgba(245,234,208,0.05)" stroke-width="1"/></svg></div>
+            <p class="card-tag">Players &amp; Perspective</p>
+            <h3 class="card-title">Four Holes, One Bag: A Round with Desmond Cole</h3>
+            <p class="card-excerpt">The architect and amateur champion on course design, movement, and what he reaches for when precision matters.</p>
+            <p class="card-date">June 10, 2026</p>
+        </div>
+        <div class="post-card">
+            <div class="card-img"><svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg"><rect width="480" height="320" fill="#141414"/><text x="240" y="175" text-anchor="middle" font-family="serif" font-size="20" fill="rgba(245,234,208,0.05)" letter-spacing="3">03</text><line x1="140" y1="100" x2="340" y2="180" stroke="rgba(139,24,24,0.1)" stroke-width="1"/><line x1="140" y1="180" x2="340" y2="100" stroke="rgba(139,24,24,0.1)" stroke-width="1"/></svg></div>
+            <p class="card-tag">Season Preview</p>
+            <h3 class="card-title">Fall 2026: What We're Building and Why It Matters</h3>
+            <p class="card-excerpt">A first look at the silhouettes, palette, and intentions behind our most considered collection to date.</p>
+            <p class="card-date">May 22, 2026</p>
+        </div>
+        <div class="post-card">
+            <div class="card-img"><svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg"><rect width="480" height="320" fill="#1C1A18"/><text x="240" y="175" text-anchor="middle" font-family="serif" font-size="20" fill="rgba(245,234,208,0.05)" letter-spacing="3">04</text></svg></div>
+            <p class="card-tag">The Game</p>
+            <h3 class="card-title">On Dress Codes: Golf's Last Frontier of Taste</h3>
+            <p class="card-excerpt">Clubs are relaxing their rules. That doesn't mean standards should follow. A case for intentional dressing.</p>
+            <p class="card-date">May 5, 2026</p>
+        </div>
+        <div class="post-card">
+            <div class="card-img"><svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg"><rect width="480" height="320" fill="#181618"/><text x="240" y="175" text-anchor="middle" font-family="serif" font-size="20" fill="rgba(245,234,208,0.05)" letter-spacing="3">05</text></svg></div>
+            <p class="card-tag">Care &amp; Longevity</p>
+            <h3 class="card-title">How to Keep Your Whites White: A Practical Guide</h3>
+            <p class="card-excerpt">Bone, ivory, and chalk are unforgiving. Here's what our production team actually does to keep light pieces looking right.</p>
+            <p class="card-date">April 18, 2026</p>
+        </div>
+        <div class="post-card">
+            <div class="card-img"><svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg"><rect width="480" height="320" fill="#161818"/><text x="240" y="175" text-anchor="middle" font-family="serif" font-size="20" fill="rgba(245,234,208,0.05)" letter-spacing="3">06</text></svg></div>
+            <p class="card-tag">Founders</p>
+            <h3 class="card-title">Why We Called It Ficti</h3>
+            <p class="card-excerpt">The name raised eyebrows. We knew it would. Here's what we meant — and what we still mean — by clothing crafted for the life you're constructing.</p>
+            <p class="card-date">March 30, 2026</p>
+        </div>
+    </div>
+</div>
+
+<div id="sectionNewsletter">
+    <div class="newsletter-hero">
+        <div class="nl-copy">
+            <p class="nl-kicker">The Ficti Letter</p>
+            <h2 class="nl-heading">A few hundred words, once a month. Worth every one.</h2>
+            <p class="nl-body">No sales blasts. No promotional spam. The Ficti Letter is a monthly dispatch covering what we're reading, what we're building, stories from our community, and first access to new drops — before anyone else hears about them.<br><br>Members receive an additional private edition with early collection previews and invitations we never post publicly.</p>
+        </div>
+        <div class="nl-form-wrap">
+            <div id="nlFormInner">
+                <span class="int-label" style="display:block;margin-bottom:28px;">Subscribe to The Ficti Letter</span>
+                <div class="nl-field"><label for="nlName">Full Name</label><input type="text" id="nlName" placeholder="James Avery"></div>
+                <div class="nl-field"><label for="nlEmail">Email Address</label><input type="email" id="nlEmail" placeholder="your@email.com"></div>
+                <div style="margin-bottom:24px;">
+                    <span class="int-label">I'm interested in</span>
+                    <div class="int-options">
+                        <button class="int-chip" onclick="toggleChip(this)">New Drops</button>
+                        <button class="int-chip" onclick="toggleChip(this)">Course Stories</button>
+                        <button class="int-chip" onclick="toggleChip(this)">Design Process</button>
+                        <button class="int-chip" onclick="toggleChip(this)">Events</button>
+                        <button class="int-chip" onclick="toggleChip(this)">Care &amp; Styling</button>
+                    </div>
+                </div>
+                <p class="nl-error" id="nlError"></p>
+                <button class="nl-btn" onclick="doSubscribe()">Subscribe</button>
+                <p class="nl-disclaimer">We respect your inbox. Unsubscribe anytime.</p>
+            </div>
+            <div class="nl-success" id="nlSuccess">
+                <div class="nl-success-icon">◆</div>
+                <h3>You're in.</h3>
+                <p>Welcome to The Ficti Letter.<br>Your first issue arrives next month.</p>
+            </div>
+        </div>
+    </div>
+    <div class="past-issues">
+        <p class="past-kicker">Past Issues</p>
+        <div class="issues-list">
+            <div class="issue-card"><div class="issue-num">07</div><p class="issue-title">The Summer Issue</p><p class="issue-date">July 2026</p><p class="issue-preview">Heat, patience, and a six-iron that changed everything. Plus: the case for linen-blend in 90-degree heat.</p></div>
+            <div class="issue-card"><div class="issue-num">06</div><p class="issue-title">On Restraint</p><p class="issue-date">June 2026</p><p class="issue-preview">Why we cut three styles from the new collection, and why we're glad we did. Sometimes the edit is the whole product.</p></div>
+            <div class="issue-card"><div class="issue-num">05</div><p class="issue-title">The Portugal Trip</p><p class="issue-date">May 2026</p><p class="issue-preview">Thirty-six holes, two mills, and one restaurant that made us question everything. A field dispatch from the sourcing trip.</p></div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleMenu() {
+    var h = document.getElementById('hamburger');
+    var m = document.getElementById('menuOverlay');
+    h.classList.toggle('open');
+    m.classList.toggle('open');
+    document.body.style.overflow = m.classList.contains('open') ? 'hidden' : '';
+}
+function showSection(sec) {
+    var isBlog = sec === 'blog';
+    document.getElementById('btnBlog').classList.toggle('active', isBlog);
+    document.getElementById('btnNewsletter').classList.toggle('active', !isBlog);
+    document.getElementById('sectionBlog').style.display = isBlog ? 'block' : 'none';
+    document.getElementById('sectionNewsletter').style.display = isBlog ? 'none' : 'block';
+}
+if (window.location.hash === '#newsletter') showSection('newsletter');
+function toggleChip(btn) { btn.classList.toggle('selected'); }
+function doSubscribe() {
+    var name = document.getElementById('nlName').value.trim();
+    var email = document.getElementById('nlEmail').value.trim();
+    var errEl = document.getElementById('nlError');
+    if (!name) { errEl.textContent = 'Please enter your name.'; return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email.'; return; }
+    errEl.textContent = '';
+    var subs = JSON.parse(localStorage.getItem('fictiNewsletter') || '[]');
+    var exists = false;
+    for (var i = 0; i < subs.length; i++) { if (subs[i].email === email) { exists = true; break; } }
+    if (!exists) { subs.push({ name: name, email: email, date: new Date().toISOString() }); localStorage.setItem('fictiNewsletter', JSON.stringify(subs)); }
+    document.getElementById('nlFormInner').style.display = 'none';
+    document.getElementById('nlSuccess').style.display = 'block';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ficti-garments",
+      "runtimeExecutable": "/usr/bin/python3",
+      "runtimeArgs": ["/Users/bensmith/serve_ficti.py"],
+      "port": 3456
+    }
+  ]
+}

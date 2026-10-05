@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="favicon-64.png" sizes="64x64">
+    <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="favicon-180.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account — Ficti Garments</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+SC:wght@300;400;500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --cream: #F5EAD0; --cream-mid: #EDE0C4; --cream-dark: #D8CAA8;
+            --crimson: #8B1818; --crimson-deep: #6B1212;
+            --black: #0D0D0D; --charcoal: #141414; --mid: #6B6B6B;
+        }
+        body { font-family: 'Montserrat', sans-serif; background: var(--black); color: var(--cream); min-height: 100vh; }
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; background: rgba(13,13,13,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(139,24,24,0.2); }
+        .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 8px; }
+        .hamburger span { display: block; width: 20px; height: 1px; background: rgba(245,234,208,0.7); transition: all 0.3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+        .nav-logo { font-family: 'Cormorant SC', serif; font-size: 15px; font-weight: 400; letter-spacing: 0.28em; color: var(--cream); text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
+        .nav-right { min-width: 80px; display: flex; justify-content: flex-end; }
+        .nav-signout { font-size: 8px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,234,208,0.3); background: none; border: none; cursor: pointer; transition: color 0.2s; }
+        .nav-signout:hover { color: rgba(245,234,208,0.7); }
+        .menu-overlay { display: none; position: fixed; inset: 0; background: rgba(13,13,13,0.98); z-index: 190; flex-direction: column; align-items: center; justify-content: center; gap: 36px; }
+        .menu-overlay.open { display: flex; }
+        .menu-overlay a { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 5vw, 50px); font-weight: 300; color: var(--cream); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
+        .menu-overlay a:hover { color: var(--crimson); }
+        .menu-overlay .menu-divider { width: 40px; height: 1px; background: rgba(245,234,208,0.12); }
+        .menu-overlay .menu-account { font-size: clamp(14px, 2vw, 18px); letter-spacing: 0.18em; color: rgba(245,234,208,0.5); }
+        .menu-overlay .menu-account:hover { color: var(--cream); }
+        .menu-close { position: absolute; top: 22px; right: 28px; background: none; border: none; color: rgba(245,234,208,0.4); cursor: pointer; font-size: 28px; line-height: 1; padding: 0; transition: color 0.2s; }
+        .menu-close:hover { color: var(--cream); }
+
+        /* PAGE */
+        .page-wrap { padding: 100px 64px 120px; max-width: 1200px; margin: 0 auto; }
+
+        /* ACCOUNT HEADER */
+        .acct-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 56px; padding-bottom: 32px; border-bottom: 1px solid rgba(245,234,208,0.07); }
+        .acct-greeting { font-size: 9px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: var(--crimson); margin-bottom: 12px; }
+        .acct-name { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 5vw, 60px); font-weight: 300; color: var(--cream); letter-spacing: 0.02em; }
+        .tier-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border: 1px solid rgba(245,234,208,0.15); }
+        .tier-badge.member { border-color: var(--crimson); background: rgba(139,24,24,0.08); }
+        .tier-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(245,234,208,0.3); }
+        .tier-badge.member .tier-dot { background: var(--crimson); }
+        .tier-label { font-size: 8px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(245,234,208,0.5); }
+        .tier-badge.member .tier-label { color: rgba(245,234,208,0.8); }
+
+        /* GRID */
+        .account-grid { display: grid; grid-template-columns: 1fr 380px; gap: 40px; align-items: start; }
+
+        /* SECTION BLOCKS */
+        .acct-section { margin-bottom: 40px; }
+        .section-label { font-size: 8px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(245,234,208,0.3); margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid rgba(245,234,208,0.06); }
+
+        /* ORDER HISTORY */
+        .order-row { display: grid; grid-template-columns: auto 1fr auto auto; gap: 16px; align-items: center; padding: 20px 24px; background: var(--charcoal); border: 1px solid rgba(245,234,208,0.05); margin-bottom: 4px; }
+        .order-id { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--cream); }
+        .order-items { font-size: 10px; color: rgba(245,234,208,0.4); line-height: 1.6; }
+        .order-status { font-size: 8px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; padding: 5px 12px; }
+        .status-delivered { color: rgba(120,200,120,0.8); background: rgba(120,200,120,0.08); border: 1px solid rgba(120,200,120,0.15); }
+        .status-processing { color: rgba(245,234,208,0.6); background: rgba(245,234,208,0.04); border: 1px solid rgba(245,234,208,0.1); }
+        .status-shipped { color: rgba(180,160,100,0.8); background: rgba(180,160,100,0.06); border: 1px solid rgba(180,160,100,0.15); }
+        .order-total { font-size: 12px; font-weight: 600; color: var(--cream); white-space: nowrap; }
+        .order-date { font-size: 8px; letter-spacing: 0.1em; color: rgba(245,234,208,0.25); margin-top: 3px; }
+        .no-orders { padding: 48px 24px; text-align: center; background: var(--charcoal); border: 1px solid rgba(245,234,208,0.05); }
+        .no-orders p { font-size: 11px; color: rgba(245,234,208,0.3); letter-spacing: 0.06em; margin-bottom: 20px; }
+        .btn-shop { display: inline-block; padding: 12px 28px; border: 1px solid rgba(245,234,208,0.2); font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cream); text-decoration: none; transition: border-color 0.2s; }
+        .btn-shop:hover { border-color: rgba(245,234,208,0.5); }
+
+        /* RIGHT SIDEBAR */
+        .sidebar-card { background: var(--charcoal); border: 1px solid rgba(245,234,208,0.06); padding: 28px; margin-bottom: 20px; }
+        .sidebar-label { font-size: 8px; font-weight: 600; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(245,234,208,0.3); margin-bottom: 20px; }
+
+        /* BAG PREVIEW */
+        .bag-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid rgba(245,234,208,0.06); }
+        .bag-item:last-of-type { border-bottom: none; }
+        .bag-thumb { width: 52px; height: 52px; background: var(--black); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .bag-thumb svg { width: 100%; height: 100%; }
+        .bag-info { flex: 1; }
+        .bag-name { font-size: 11px; font-weight: 500; color: var(--cream); margin-bottom: 3px; }
+        .bag-detail { font-size: 9px; color: rgba(245,234,208,0.35); letter-spacing: 0.06em; }
+        .bag-price { font-size: 11px; color: var(--cream); white-space: nowrap; }
+        .bag-empty { text-align: center; padding: 24px 0; }
+        .bag-empty p { font-size: 10px; color: rgba(245,234,208,0.3); margin-bottom: 16px; }
+        .bag-total-row { display: flex; justify-content: space-between; align-items: center; padding-top: 18px; margin-top: 4px; border-top: 1px solid rgba(245,234,208,0.08); }
+        .bag-total-label { font-size: 8px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,234,208,0.4); }
+        .bag-total-val { font-size: 14px; font-weight: 600; color: var(--cream); }
+        .btn-checkout-sm { display: block; width: 100%; height: 44px; background: var(--cream); border: none; font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--black); cursor: pointer; margin-top: 16px; transition: background 0.2s; text-decoration: none; text-align: center; line-height: 44px; }
+        .btn-checkout-sm:hover { background: var(--cream-mid); }
+
+        /* MEMBER UPGRADE */
+        .upgrade-card { background: linear-gradient(135deg, rgba(139,24,24,0.15) 0%, rgba(13,13,13,0.8) 100%); border: 1px solid rgba(139,24,24,0.3); padding: 32px 28px; }
+        .upgrade-icon { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: rgba(139,24,24,0.4); line-height: 1; margin-bottom: 16px; }
+        .upgrade-heading { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; color: var(--cream); margin-bottom: 10px; }
+        .upgrade-body { font-size: 10px; color: rgba(245,234,208,0.4); line-height: 1.8; margin-bottom: 22px; }
+        .upgrade-perks { margin-bottom: 24px; display: flex; flex-direction: column; gap: 8px; }
+        .up-perk { display: flex; align-items: flex-start; gap: 10px; font-size: 9px; color: rgba(245,234,208,0.5); letter-spacing: 0.05em; }
+        .up-perk::before { content: '◆'; font-size: 6px; color: var(--crimson); margin-top: 3px; flex-shrink: 0; }
+        .btn-upgrade { display: block; width: 100%; height: 46px; background: var(--crimson); border: none; font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--cream); cursor: pointer; transition: background 0.2s; }
+        .btn-upgrade:hover { background: var(--crimson-deep); }
+
+        /* MEMBER CONFIRMED */
+        .member-confirmed { background: rgba(139,24,24,0.08); border: 1px solid rgba(139,24,24,0.25); padding: 24px 28px; }
+        .mc-icon { font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--crimson); margin-bottom: 10px; }
+        .mc-text { font-size: 11px; color: rgba(245,234,208,0.5); line-height: 1.7; }
+        .mc-link { display: inline-block; margin-top: 14px; font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cream); text-decoration: none; border-bottom: 1px solid rgba(245,234,208,0.2); padding-bottom: 3px; }
+
+        /* ACCOUNT INFO */
+        .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(245,234,208,0.05); }
+        .info-key { font-size: 8px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,234,208,0.3); }
+        .info-val { font-size: 11px; color: rgba(245,234,208,0.6); }
+
+        @media (max-width: 900px) {
+            .account-grid { grid-template-columns: 1fr; }
+            .page-wrap { padding: 100px 28px 80px; }
+            .acct-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .order-row { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+<nav id="main-nav">
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    <a href="index.html" class="nav-logo">Ficti Garments</a>
+    <div class="nav-right"><button class="nav-signout" onclick="doSignOut()">Sign Out</button></div>
+</nav>
+<div class="menu-overlay" id="menuOverlay">
+    <button class="menu-close" onclick="toggleMenu()">×</button>
+    <a href="index.html" onclick="toggleMenu()">Home</a>
+    <a href="collections.html" onclick="toggleMenu()">Collections</a>
+    <a href="members.html" onclick="toggleMenu()">Members</a>
+    <a href="blog.html" onclick="toggleMenu()">Blog</a>
+    <a href="about.html" onclick="toggleMenu()">About</a>
+    <a href="contact.html" onclick="toggleMenu()">Contact</a>
+    <div class="menu-divider"></div>
+    <a href="account.html" class="menu-account" onclick="toggleMenu()">My Account</a>
+</div>
+
+<div class="page-wrap" id="pageWrap" style="display:none;">
+    <div class="acct-header">
+        <div>
+            <p class="acct-greeting">Welcome Back</p>
+            <h1 class="acct-name" id="acctName">—</h1>
+        </div>
+        <div id="tierBadge" class="tier-badge">
+            <div class="tier-dot"></div>
+            <span class="tier-label" id="tierLabel">General</span>
+        </div>
+    </div>
+
+    <div class="account-grid">
+        <!-- LEFT: ORDERS -->
+        <div>
+            <div class="acct-section">
+                <p class="section-label">Order History</p>
+                <div id="ordersList"></div>
+            </div>
+
+            <div class="acct-section">
+                <p class="section-label">Account Details</p>
+                <div class="sidebar-card" style="background:transparent;border:1px solid rgba(245,234,208,0.06);padding:0;">
+                    <div id="acctInfoRows"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: BAG + UPGRADE -->
+        <div>
+            <div class="sidebar-card">
+                <p class="sidebar-label">Your Bag</p>
+                <div id="bagPreview"></div>
+            </div>
+
+            <div id="upgradeSection"></div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const supabase = createClient('https://nusuluxjeckjcdgxzgyf.supabase.co', 'sb_publishable_i8jwxXfkwQKCApZOCFu8SA_JrwICvqK');
+
+window.toggleMenu = function() {
+    var h = document.getElementById('hamburger');
+    var m = document.getElementById('menuOverlay');
+    h.classList.toggle('open');
+    m.classList.toggle('open');
+    document.body.style.overflow = m.classList.contains('open') ? 'hidden' : '';
+};
+
+window.doSignOut = async function() {
+    await supabase.auth.signOut();
+    window.location.href = 'login.html';
+};
+
+function formatDate(iso) {
+    var d = new Date(iso);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+}
+
+function renderOrders(orders) {
+    var el = document.getElementById('ordersList');
+    if (!orders || orders.length === 0) {
+        el.innerHTML = '<div class="no-orders"><p>No orders yet.</p><a href="collections.html" class="btn-shop">Browse Collections</a></div>';
+        return;
+    }
+    var html = '';
+    for (var i = 0; i < orders.length; i++) {
+        var o = orders[i];
+        var statusClass = 'status-processing';
+        if (o.status === 'Delivered' || o.status === 'delivered') statusClass = 'status-delivered';
+        else if (o.status === 'Shipped' || o.status === 'shipped') statusClass = 'status-shipped';
+        var items = Array.isArray(o.items) ? o.items.join('<br>') : (o.items || '');
+        var total = o.total || (o.total_cents ? '$' + (o.total_cents / 100).toFixed(2) : '—');
+        html += '<div class="order-row">';
+        html += '<div><p class="order-id">' + (o.order_number || o.id) + '</p><p class="order-date">' + (o.created_at ? formatDate(o.created_at) : o.date) + '</p></div>';
+        html += '<div class="order-items">' + items + '</div>';
+        html += '<span class="order-status ' + statusClass + '">' + o.status + '</span>';
+        html += '<p class="order-total">' + total + '</p>';
+        html += '</div>';
+    }
+    el.innerHTML = html;
+}
+
+function renderBag(cart) {
+    var el = document.getElementById('bagPreview');
+    if (!cart || cart.length === 0) {
+        el.innerHTML = '<div class="bag-empty"><p>Your bag is empty.</p><a href="collections.html" class="btn-shop">Shop Now</a></div>';
+        return;
+    }
+    var html = '';
+    var total = 0;
+    for (var i = 0; i < cart.length; i++) {
+        var item = cart[i];
+        var price = parseFloat((item.price || '0').toString().replace(/[^0-9.]/g, '')) || 0;
+        var qty = item.qty || 1;
+        total += price * qty;
+        html += '<div class="bag-item">';
+        html += '<div class="bag-thumb"><svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="52" fill="#1A1A1A"/><text x="26" y="32" text-anchor="middle" font-family="serif" font-size="14" fill="rgba(245,234,208,0.15)">FG</text></svg></div>';
+        html += '<div class="bag-info"><p class="bag-name">' + (item.name || 'Item') + '</p><p class="bag-detail">' + (item.size ? 'Size ' + item.size : '') + (item.color ? ' — ' + item.color : '') + (qty > 1 ? ' × ' + qty : '') + '</p></div>';
+        html += '<p class="bag-price">$' + (price * qty).toFixed(2).replace(/\.00$/, '') + '</p>';
+        html += '</div>';
+    }
+    html += '<div class="bag-total-row"><span class="bag-total-label">Subtotal</span><span class="bag-total-val">$' + total.toFixed(2) + '</span></div>';
+    html += '<a href="checkout.html" class="btn-checkout-sm">Proceed to Checkout</a>';
+    el.innerHTML = html;
+}
+
+function renderUpgrade(tier) {
+    var el = document.getElementById('upgradeSection');
+    if (tier) {
+        var tierName = tier === 'I' ? 'Tier I' : tier === 'II' ? 'Tier II' : tier === 'III' ? 'Tier III' : 'Member';
+        el.innerHTML = '<div class="member-confirmed"><p class="mc-icon">' + tierName + ' Member</p><p class="mc-text">You have full member access — early collection drops, exclusive pricing, and private event invitations.</p><a href="members.html" class="mc-link">View Member Benefits</a></div>';
+    } else {
+        el.innerHTML = '<div class="upgrade-card"><div class="upgrade-icon">◆</div><h2 class="upgrade-heading">Join The Inner Circle</h2><p class="upgrade-body">Three tiers of exclusive membership — early drops, exclusive pricing, and private events.</p><div class="upgrade-perks"><div class="up-perk">Early access to every new collection</div><div class="up-perk">Exclusive member-only pricing</div><div class="up-perk">Private event &amp; trunk show invitations</div><div class="up-perk">First look at limited tournament editions</div></div><a href="members.html" class="btn-upgrade" style="display:block;text-align:center;line-height:46px;text-decoration:none;">View Membership Plans</a></div>';
+    }
+}
+
+async function init() {
+    var { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+        window.location.href = 'login.html?redirect=account.html';
+        return;
+    }
+
+    var user = session.user;
+    var { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+    profile = profile || {};
+
+    var firstName = profile.first_name || user.user_metadata?.first_name || 'Guest';
+    var lastName = profile.last_name || user.user_metadata?.last_name || '';
+    var fullName = (firstName + ' ' + lastName).trim();
+    var tier = profile.membership_tier || null;
+
+    document.getElementById('acctName').textContent = firstName;
+    if (tier) {
+        document.getElementById('tierBadge').classList.add('member');
+        document.getElementById('tierLabel').textContent = tier === 'I' ? 'Tier I' : tier === 'II' ? 'Tier II' : tier === 'III' ? 'Tier III' : 'Member';
+    }
+
+    // Load orders from Supabase
+    var { data: orders } = await supabase.from('orders').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+    renderOrders(orders || []);
+
+    var cart = JSON.parse(localStorage.getItem('fictiCart') || '[]');
+    renderBag(cart);
+    renderUpgrade(tier);
+
+    var joined = profile.created_at ? formatDate(profile.created_at) : formatDate(user.created_at);
+    document.getElementById('acctInfoRows').innerHTML =
+        '<div class="info-row" style="padding:12px 24px;"><span class="info-key">Name</span><span class="info-val">' + fullName + '</span></div>' +
+        '<div class="info-row" style="padding:12px 24px;"><span class="info-key">Email</span><span class="info-val">' + user.email + '</span></div>' +
+        '<div class="info-row" style="padding:12px 24px;border-bottom:none;"><span class="info-key">Member Since</span><span class="info-val">' + joined + '</span></div>';
+
+    document.getElementById('pageWrap').style.display = 'block';
+}
+
+init();
+</script>
+</body>
+</html>
