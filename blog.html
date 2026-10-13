@@ -343,7 +343,7 @@ window.doSubscribe = async function() {
     errEl.textContent = '';
     var res = await supabase.from('newsletter_subscribers').upsert({ email: email }, { onConflict: 'email' });
     if (res.error) { errEl.textContent = 'Something went wrong. Please try again.'; return; }
-    fetch('https://nusuluxjeckjcdgxzgyf.supabase.co/functions/v1/subscribe', {
+    fetch('https://nusuluxjeckjcdgxzgyf.supabase.co/functions/v1/clever-service', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_i8jwxXfkwQKCApZOCFu8SA_JrwICvqK' },
         body: JSON.stringify({ email: email, first_name: name.split(' ')[0], last_name: name.split(' ').slice(1).join(' ') })

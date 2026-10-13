@@ -255,7 +255,7 @@ window.nlSubscribe = async function() {
 
     // Call Mailchimp via Supabase Edge Function
     try {
-        var res = await fetch('https://nusuluxjeckjcdgxzgyf.supabase.co/functions/v1/subscribe', {
+        var res = await fetch('https://nusuluxjeckjcdgxzgyf.supabase.co/functions/v1/clever-service', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_i8jwxXfkwQKCApZOCFu8SA_JrwICvqK' },
             body: JSON.stringify({ email })
