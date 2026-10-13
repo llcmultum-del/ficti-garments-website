@@ -1,6 +1,6 @@
 // Supabase Edge Function: subscribe
 // Deploy via Supabase Dashboard → Edge Functions → Create function → paste this
-// Then set secret: MAILCHIMP_API_KEY = (your Mailchimp API key)
+// Then set secret: MAILCHIMP_API_KEY = (your key from Mailchimp → Account → Extras → API keys)
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
