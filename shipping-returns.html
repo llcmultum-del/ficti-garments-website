@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="favicon-64.png" sizes="64x64">
+    <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="favicon-180.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shipping &amp; Returns — Ficti Garments</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root { --cream: #F5EAD0; --crimson: #8B1818; --crimson-deep: #6B1212; --black: #0D0D0D; --charcoal: #141414; --charcoal-2: #1C1C1C; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--cream); color: var(--black); overflow-x: hidden; }
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; background: rgba(13,13,13,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(139,24,24,0.28); }
+        .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 8px; }
+        .hamburger span { display: block; width: 22px; height: 1.5px; background: var(--cream); transition: all 0.3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+        .nav-logo { font-family: 'Cormorant SC', serif; font-size: 17px; font-weight: 500; letter-spacing: 0.22em; color: var(--cream); text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
+        .nav-right { display: flex; align-items: center; }
+        .nav-cart { background: none; border: none; cursor: pointer; color: rgba(245,234,208,0.65); display: flex; align-items: center; gap: 7px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; transition: color 0.2s; padding: 0; }
+        .nav-cart:hover { color: var(--cream); }
+        .menu-overlay { display: none; position: fixed; inset: 0; background: rgba(13,13,13,0.98); z-index: 190; flex-direction: column; align-items: center; justify-content: center; gap: 44px; }
+        .menu-overlay.open { display: flex; }
+        .menu-overlay a { font-family: 'Cormorant Garamond', serif; font-size: clamp(38px, 6vw, 58px); font-weight: 300; color: var(--cream); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
+        .menu-overlay a:hover { color: var(--crimson); }
+        .menu-close { position: absolute; top: 22px; right: 28px; background: none; border: none; color: rgba(245,234,208,0.45); cursor: pointer; font-size: 30px; line-height: 1; transition: color 0.2s; padding: 0; }
+        .menu-close:hover { color: var(--cream); }
+        .page-hero { padding: 160px 60px 80px; background: var(--charcoal); position: relative; overflow: hidden; }
+        .page-hero::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(45deg, rgba(139,24,24,0.07) 1px, transparent 1px), linear-gradient(-45deg, rgba(139,24,24,0.07) 1px, transparent 1px); background-size: 56px 56px; }
+        .page-hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%, transparent 50%, rgba(13,13,13,0.6) 100%); pointer-events: none; }
+        .page-hero-inner { position: relative; z-index: 2; max-width: 900px; }
+        .page-eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 0.45em; text-transform: uppercase; color: var(--crimson); margin-bottom: 20px; }
+        .page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(48px, 7vw, 90px); font-weight: 300; line-height: 0.95; color: var(--cream); }
+
+        .legal-body { max-width: 780px; margin: 0 auto; padding: 80px 60px 100px; }
+        .legal-body h2 { font-family: 'Cormorant SC', serif; font-size: 18px; font-weight: 500; letter-spacing: 0.18em; color: var(--black); margin: 48px 0 16px; }
+        .legal-body h2:first-child { margin-top: 0; }
+        .legal-body p { font-size: 14px; font-weight: 300; line-height: 1.85; color: rgba(13,13,13,0.7); margin-bottom: 16px; }
+        .legal-body ul { padding-left: 24px; margin-bottom: 16px; }
+        .legal-body ul li { font-size: 14px; font-weight: 300; line-height: 1.85; color: rgba(13,13,13,0.7); margin-bottom: 6px; }
+        .legal-date { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--crimson); margin-bottom: 40px; }
+        .legal-divider { width: 36px; height: 1px; background: var(--crimson); margin: 0 0 48px; }
+        a.legal-link { color: var(--crimson); text-decoration: none; }
+        a.legal-link:hover { text-decoration: underline; }
+
+        /* Info cards */
+        .info-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin: 48px 0; }
+        .info-card { background: var(--charcoal); padding: 36px 28px; }
+        .info-card-label { font-size: 9px; letter-spacing: 0.38em; text-transform: uppercase; color: var(--crimson); margin-bottom: 12px; }
+        .info-card-value { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--cream); margin-bottom: 8px; }
+        .info-card-desc { font-size: 11px; font-weight: 300; color: rgba(245,234,208,0.42); line-height: 1.7; }
+
+        footer { background: var(--black); padding: 64px 60px 36px; }
+        .footer-top { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 36px; }
+        .footer-brand-block { display: flex; flex-direction: column; gap: 12px; }
+        .footer-logo-row { display: flex; align-items: center; gap: 14px; }
+        .footer-seal-img { width: 40px; height: 40px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(139,24,24,0.3)); }
+        .footer-wordmark { font-family: 'Cormorant SC', serif; font-size: 20px; font-weight: 500; letter-spacing: 0.22em; color: var(--cream); }
+        .footer-tagline-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 14px; color: rgba(245,234,208,0.35); }
+        .footer-cols { display: flex; gap: 64px; }
+        .footer-col h4 { font-size: 9px; font-weight: 600; letter-spacing: 0.35em; text-transform: uppercase; color: var(--crimson); margin-bottom: 20px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+        .footer-col a { font-size: 13px; font-weight: 300; color: rgba(245,234,208,0.42); text-decoration: none; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--cream); }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .footer-copy { font-size: 11px; color: rgba(255,255,255,0.18); }
+        .footer-social { display: flex; gap: 24px; }
+        .footer-social a { font-size: 10px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(245,234,208,0.35); text-decoration: none; transition: color 0.2s; }
+        .footer-social a:hover { color: var(--cream); }
+        @media (max-width: 900px) {
+            .page-hero { padding: 130px 24px 60px; }
+            .legal-body { padding: 60px 24px 80px; }
+            .info-cards { grid-template-columns: 1fr; }
+            footer { padding: 48px 24px 28px; }
+            .footer-top { flex-direction: column; gap: 44px; }
+            .footer-cols { flex-wrap: wrap; gap: 40px; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    <a href="index.html" class="nav-logo">Ficti Garments</a>
+    <div class="nav-right">
+        <button class="nav-cart" onclick="window.location.href='checkout.html'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            Bag <span class="cart-badge" id="cart-count">0</span>
+        </button>
+    </div>
+</nav>
+<div class="menu-overlay" id="menuOverlay">
+    <button class="menu-close" id="menuClose">×</button>
+    <a href="index.html">Home</a>
+    <a href="collections.html">Collections</a>
+    <a href="members.html">Members</a>
+    <a href="about.html">About</a>
+    <a href="blog.html">Journal</a>
+    <a href="contact.html">Contact</a>
+</div>
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-eyebrow">Customer Care</p>
+        <h1 class="page-title">Shipping &amp;<br><em>Returns</em></h1>
+    </div>
+</section>
+
+<div class="legal-body">
+    <div class="info-cards">
+        <div class="info-card">
+            <div class="info-card-label">Standard Shipping</div>
+            <div class="info-card-value">5–7 Days</div>
+            <div class="info-card-desc">Free on orders over $150</div>
+        </div>
+        <div class="info-card">
+            <div class="info-card-label">Express Shipping</div>
+            <div class="info-card-value">2–3 Days</div>
+            <div class="info-card-desc">Available at checkout</div>
+        </div>
+        <div class="info-card">
+            <div class="info-card-label">Return Window</div>
+            <div class="info-card-value">30 Days</div>
+            <div class="info-card-desc">Unworn, tags attached</div>
+        </div>
+    </div>
+
+    <h2>Shipping</h2>
+    <p>All orders are processed within 1–2 business days. You will receive a shipping confirmation email with tracking information once your order has been dispatched.</p>
+    <ul>
+        <li><strong>Standard Shipping (5–7 business days):</strong> Free on orders over $150. A flat shipping rate applies to orders below this threshold.</li>
+        <li><strong>Express Shipping (2–3 business days):</strong> Available at checkout for an additional fee.</li>
+        <li><strong>Overnight Shipping:</strong> Available on select items — contact us at <a href="mailto:hello@fictigarments.com" class="legal-link">hello@fictigarments.com</a> for arrangements.</li>
+    </ul>
+    <p>At this time, we ship within the United States. International shipping will be available in future seasons — join the newsletter to be notified.</p>
+
+    <h2>Order Tracking</h2>
+    <p>Once your order ships, a tracking link will be emailed to you. You can also view your order status by logging into your account at any time. If you have not received a tracking email within 3 business days of placing your order, please contact us.</p>
+
+    <h2>Returns</h2>
+    <p>We stand behind the quality of every Ficti piece. If you are not completely satisfied, we accept returns within <strong>30 days</strong> of delivery, provided items are:</p>
+    <ul>
+        <li>Unworn and unwashed</li>
+        <li>In original condition with all tags attached</li>
+        <li>Accompanied by the original packing slip or order confirmation</li>
+    </ul>
+    <p>Final sale items and personalized or monogrammed pieces are not eligible for return.</p>
+
+    <h2>How to Return</h2>
+    <p>To initiate a return, email <a href="mailto:hello@fictigarments.com" class="legal-link">hello@fictigarments.com</a> with your order number and the item(s) you wish to return. We will provide a prepaid return label within 1 business day.</p>
+    <p>Once your return is received and inspected, a refund will be issued to your original payment method within 5–7 business days.</p>
+
+    <h2>Exchanges</h2>
+    <p>We currently process exchanges as a return and new order. To exchange a size or color, initiate a return and place a new order for the item you need. If the item is unavailable, we will reach out to discuss alternatives.</p>
+
+    <h2>Damaged or Incorrect Items</h2>
+    <p>If you receive a damaged or incorrect item, please contact us within 48 hours of delivery at <a href="mailto:hello@fictigarments.com" class="legal-link">hello@fictigarments.com</a> with your order number and a photo. We will arrange a replacement or full refund at no cost to you.</p>
+
+    <h2>Questions</h2>
+    <p>Our team is available Monday–Friday, 9am–5pm EST. Reach us at <a href="mailto:hello@fictigarments.com" class="legal-link">hello@fictigarments.com</a> or through our <a href="contact.html" class="legal-link">Contact page</a>.</p>
+</div>
+
+<footer>
+    <div class="footer-top">
+        <div class="footer-brand-block">
+            <div class="footer-logo-row">
+                <img class="footer-seal-img" src="stamp-seal.png" alt="Ficti seal">
+                <span class="footer-wordmark">Ficti Garments</span>
+            </div>
+            <div class="footer-tagline-text">Make Your Stamp.</div>
+        </div>
+        <div class="footer-cols">
+            <div class="footer-col"><h4>Shop</h4><ul>
+                <li><a href="collections.html">Collections</a></li>
+                <li><a href="collections.html">Polos</a></li>
+                <li><a href="collections.html">View All</a></li>
+            </ul></div>
+            <div class="footer-col"><h4>Brand</h4><ul>
+                <li><a href="about.html">Our Story</a></li>
+                <li><a href="blog.html">Journal</a></li>
+                <li><a href="members.html">Membership</a></li>
+            </ul></div>
+            <div class="footer-col"><h4>Info</h4><ul>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="shipping-returns.html">Shipping &amp; Returns</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+            </ul></div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p class="footer-copy">&copy; 2025 Ficti Garments. All rights reserved.</p>
+        <div class="footer-social">
+            <a href="#">Instagram</a><a href="#">TikTok</a><a href="#">X</a>
+        </div>
+    </div>
+</footer>
+<script src="chat-widget.js" defer></script>
+<script>
+    document.getElementById('hamburger').addEventListener('click', function() {
+        this.classList.toggle('open');
+        document.getElementById('menuOverlay').classList.toggle('open');
+    });
+    document.getElementById('menuClose').addEventListener('click', function() {
+        document.getElementById('hamburger').classList.remove('open');
+        document.getElementById('menuOverlay').classList.remove('open');
+    });
+</script>
+</body>
+</html>
