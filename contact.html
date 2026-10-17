@@ -220,50 +220,5 @@ function handleSignup(e) {
 
 
 
-<!-- Voiceflow Chat Widget + Ficti Launcher -->
-<script type="text/javascript">
-(function(d,t){
-  var v=d.createElement(t),s=d.getElementsByTagName(t)[0];
-  v.onload=function(){
-    window.voiceflow.chat.load({
-      verify:{projectID:'6a34a5b3677246c35414152a'},
-      url:'https://general-runtime.voiceflow.com',
-      versionID:'main'
-    });
-    var vfBtn=null,tries=0;
-    var iv=setInterval(function(){
-      var host=document.querySelector('#voiceflow-chat');
-      if(host){
-        var el=null;
-        if(host.shadowRoot) el=host.shadowRoot.querySelector('[class*="launcher"],[class*="Launcher"],[data-testid="launcher"]');
-        if(!el) el=host.querySelector('button');
-        if(el){
-          el.style.cssText='opacity:0!important;pointer-events:none!important;position:absolute!important;bottom:24px!important;right:24px!important;';
-          vfBtn=el;
-          clearInterval(iv);
-          return;
-        }
-      }
-      if(++tries>40) clearInterval(iv);
-    },250);
-    document.getElementById('ficti-stamp').addEventListener('click',function(){
-      if(vfBtn){ vfBtn.style.pointerEvents='auto'; vfBtn.click(); vfBtn.style.pointerEvents='none'; }
-      else if(window.voiceflow&&window.voiceflow.chat){ try{ window.voiceflow.chat.open(); }catch(e){} }
-    });
-  };
-  v.src="https://cdn.voiceflow.com/widget/bundle.mjs";
-  v.type="text/javascript";
-  s.parentNode.insertBefore(v,s);
-})(document,'script');
-</script>
-<style>
-#ficti-stamp{position:fixed;bottom:24px;right:24px;width:70px;height:70px;background:none;border:none;padding:0;margin:0;cursor:pointer;z-index:2147483647;transition:transform .18s ease,filter .18s ease;filter:drop-shadow(0 3px 10px rgba(0,0,0,.35));}
-#ficti-stamp:hover{transform:scale(1.1);filter:drop-shadow(0 5px 16px rgba(139,24,24,.5));}
-#ficti-stamp:active{transform:scale(0.93);}
-#ficti-stamp img{width:70px;height:70px;object-fit:contain;display:block;pointer-events:none;}
-</style>
-<button id="ficti-stamp" aria-label="Chat with Ficti">
-  <img src="stamp-seal.png" alt="Ficti">
-</button>
-
+<script src="chat-widget.js" defer></script>
 </body></html>
